@@ -1,10 +1,10 @@
 import 'react-app-polyfill/ie11'; // For IE 11 support
 import 'react-app-polyfill/stable';
-import './polyfill'
+import './services/polyfill'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import * as serviceWorker from './services/serviceWorker';
 
 import { icons } from './assets/icons'
 
@@ -16,7 +16,7 @@ React.icons = icons
 ReactDOM.render(
   <Provider store={store}>
     <App/>
-  </Provider>, 
+  </Provider>,
   document.getElementById('root')
 );
 
