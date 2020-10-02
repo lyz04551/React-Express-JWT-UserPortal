@@ -15,6 +15,24 @@ export default [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Professionals',
+    to: '/professionals',
+    icon: 'cil-people'
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Patients',
+    to: '/patients',
+    icon: 'cil-people'
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Categories',
+    to: '/categories',
+    icon: 'cil-tags'
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Colors',
     to: '/theme/colors',
     icon: 'cil-drop',
