@@ -44,8 +44,8 @@ const Categories = React.lazy(() => import('./views/Categories'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/professionals', name: 'Professionals', component: Professionals},
-  { path: '/patients', name: 'Professionals', component: Patients},
-  { path: '/categories', name: 'Professionals', component: Categories},
+  { path: '/patients', name: 'Patients', component: Patients},
+  { path: '/categories', name: 'Categories', component: Categories},
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/theme', name: 'Theme', component: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', component: Colors },
