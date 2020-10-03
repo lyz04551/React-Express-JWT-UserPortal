@@ -1,9 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 //create express app
 const app = express();
-const port = process.env.PORT || 5000;
+
+var corsOptions = {
+    origin: "http://localhost:5051"
+}
+
+app.use(cors(corsOptions));
+
 
 //parse requests of content-type - application/x-www-for-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -13,7 +20,7 @@ app.use(bodyParser.json());
 
 //define a root route
 app.get('/', (req, res) => {
-    res.send("hello world");
+    res.json({message: "Hello world"});
 });
 
 //Require routes
@@ -22,7 +29,8 @@ const routes = require('./src/routes')
 //using as middleware
 app.use('/api', routes);
 
-//listen for requests
+// set port, listen for requests
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })
