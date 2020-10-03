@@ -1,5 +1,5 @@
 'use strict';
-const Auth = require('../models/auth.model');
+const Auth = require('../models/user.model');
 
 exports.findAll = function (req, res) {
     auth.getAll(function(err, professional) {
