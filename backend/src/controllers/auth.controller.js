@@ -17,9 +17,6 @@ exports.create = function (req, res){
         console.log(req.body)
         res.status(400).send({error: true, message: 'Please provide all required field'})
     } else {
-        Auth.findById(req.body.email, function (err, result) {
-
-        })
         Auth.create(new_user, function (err, user) {
             if (err)
                 res.send(err)
