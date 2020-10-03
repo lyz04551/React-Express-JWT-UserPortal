@@ -1,4 +1,4 @@
-'user strict';
+'use strict';
 var dbConn = require('../../config/db.config');
 
 var Auth = function (user) {
@@ -6,14 +6,14 @@ var Auth = function (user) {
     this.username = user.username
     this.email = user.email
     this.pass = user.pass
-    this.initcode = user.initcode
-    this.cpf = user.cpf
-    this.birthday = user.birthday
+    // this.initcode = user.initcode
+    // this.cpf = user.cpf
+    // this.birthday = user.birthday
     this.gender = user.gender
-    this.master = user.master
-    this.active = user.active
-    this.fk_professional = user.fk_professional
-    this.fk_license = user.fk_license
+    // this.master = user.master
+    // this.active = user.active
+    // this.fk_professional = user.fk_professional
+    // this.fk_license = user.fk_license
     this.deleted = user.deleted ? user.deleted : 0;
 }
 Auth.create = function(data, result){
@@ -38,3 +38,4 @@ Auth.findById = function (email, result) {
         }
     })
 }
+module.exports = Auth;

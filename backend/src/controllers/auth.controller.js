@@ -1,5 +1,5 @@
-'user strict';
-const auth = require('../models/auth.model');
+'use strict';
+const Auth = require('../models/auth.model');
 
 exports.findAll = function (req, res) {
     auth.getAll(function(err, professional) {
@@ -10,13 +10,17 @@ exports.findAll = function (req, res) {
     });
 }
 exports.create = function (req, res){
-    const new_user = new auth(req.body)
+    const new_user = new Auth(req.body)
 
 //    handles null error
     if (req.body.constructor === Object && Object.keys(req.body).length === 0){
+        console.log(req.body)
         res.status(400).send({error: true, message: 'Please provide all required field'})
     } else {
-        auth.create(new_user, function (err, user) {
+        Auth.findById(req.body.email, function (err, result) {
+
+        })
+        Auth.create(new_user, function (err, user) {
             if (err)
                 res.send(err)
             res.send({error:false, message: 'User added successfully!', data: user})
@@ -24,7 +28,7 @@ exports.create = function (req, res){
     }
 }
 exports.findById = function (req, res) {
-    auth.findById(req.params.id, function (err, user) {
+    Auth.findById(req.params.id, function (err, user) {
         if (err)
             res.send(err)
         res.json(user)

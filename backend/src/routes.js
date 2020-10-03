@@ -1,6 +1,6 @@
 const express = require('express');
-const router = express().Router();
-const authController = require('./controllers/auth/auth.controller')
+const router = express.Router();
+const authController = require('./controllers/auth.controller')
 
 // Retrieve all User
 // router.get('/', authController.findAll);
