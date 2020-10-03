@@ -27,13 +27,12 @@ Auth.create = function(data, result){
         }
     })
 }
-Auth.findById = function (email, result) {
+Auth.findByEmail = function (email, result) {
     dbConn.query("Select * from users where email = ?", email, function (err, res) {
         if (err) {
             console.log("error:", err)
             result(err, null);
         } else {
-            console.log(res);
             result(null, res);
         }
     })
