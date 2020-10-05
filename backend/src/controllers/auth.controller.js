@@ -53,11 +53,14 @@ exports.authenticateJWT = (req, res, next) => {
 }
 exports.login = (req, res) => {
     const { email, pass } = req.body
+
     Auth.findByEmail(email, function (err, user) {
         if (err)
             res.send(err)
         if (user.length === 0)
-            res.send("Account is not exist")
+            res.json({
+                message: "Account is not exist"
+            })
         else {
             const match = bcrypt.compareSync(pass, user[0].pass)
             if (match) {
@@ -67,7 +70,11 @@ exports.login = (req, res) => {
                 refreshTokens.push(refreshToken)
 
                 res.json({
-                    accessToken, refreshToken
+                    accessToken, refreshToken, user: user[0]
+                })
+            } else {
+                res.json({
+                    message: "Password is not correct."
                 })
             }
         }

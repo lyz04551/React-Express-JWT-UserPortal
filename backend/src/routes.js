@@ -8,14 +8,16 @@ const authController = require('./controllers/auth.controller')
 // Create a new User
 router.post('/', authController.create);
 
-router.post('/login', authController.login);
-router.post('/token', authController.token);
 // Retrieve a single User with id
+// router.get('/:id', authController.findById);
 
 // Update a User with id
 // router.put('/:id', authController.update);
 
 // Delete a User with id
 // router.delete('/:id', authController.delete);
+
+router.post('/login', authController.login);
+router.post('/token', authController.token);
 
 module.exports = router;
