@@ -47,7 +47,6 @@ const Professional = () =>{
                         </CBadge>
                       </td>
                     )
-
                 }}
               />
             </CCardBody>

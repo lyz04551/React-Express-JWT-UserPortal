@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,8 +15,34 @@ import {
   CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import api from '../../../services/api'
 
 const Login = () => {
+  const [email, setEmail] = useState("")
+  const [pass, setPass] = useState("")
+  const [message, setMessage] = useState("")
+  const history = useHistory()
+
+  async function user_login() {
+    try {
+      const mail = 'tortuc@outlook.com';
+      const password = 'tortuc123!@#';
+      const response = await api.post('/login', { email: mail, pass: password })
+      console.log(response.data)
+      if (response.data.user){
+        localStorage.setItem('user_info', JSON.stringify(response.data))
+        history.push('/professionals')
+      } else {
+        setMessage(response.data.message)
+      }
+
+    }
+    catch(e)
+    {
+      alert(e.message)
+    }
+  }
+
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -28,13 +54,14 @@ const Login = () => {
                   <CForm>
                     <h1>Login</h1>
                     <p className="text-muted">Sign In to your account</p>
+                    <p className="text-danger">{message}</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupPrepend>
                         <CInputGroupText>
                           <CIcon name="cil-user" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="text" placeholder="Username" autoComplete="username" />
+                      <CInput type="email" placeholder="Email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)}  />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
@@ -42,11 +69,11 @@ const Login = () => {
                           <CIcon name="cil-lock-locked" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="password" placeholder="Password" autoComplete="current-password" />
+                      <CInput type="password" placeholder="Password" autoComplete="current-password" value={pass} onChange={e => setPass(e.target.value)}  />
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
-                        <CButton color="primary" className="px-4">Login</CButton>
+                        <CButton onClick={user_login} color="primary" className="px-4">Login</CButton>
                       </CCol>
                       <CCol xs="6" className="text-right">
                         <CButton color="link" className="px-0">Forgot password?</CButton>
