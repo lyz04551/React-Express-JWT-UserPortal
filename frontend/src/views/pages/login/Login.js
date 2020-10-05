@@ -16,29 +16,47 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import api from '../../../services/api'
+import { useFormik } from 'formik';
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [pass, setPass] = useState("")
   const [message, setMessage] = useState("")
   const history = useHistory()
 
-  async function user_login() {
+  const validate = values => {
+    const errors = {};
+    if (!values.password) {
+      errors.password = 'Required';
+    }
+
+    if (!values.email) {
+      errors.email = 'Required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = 'Invalid email address';
+    }
+    return errors;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    validate,
+    onSubmit: values => {
+      user_login(values)
+    }
+  })
+
+  async function user_login(values) {
     try {
-      const mail = 'tortuc@outlook.com';
-      const password = 'tortuc123!@#';
-      const response = await api.post('/login', { email: mail, pass: password })
-      console.log(response.data)
+      const response = await api.post('/login', { email: values.email, pass: values.password })
       if (response.data.user){
         localStorage.setItem('user_info', JSON.stringify(response.data))
         history.push('/professionals')
       } else {
         setMessage(response.data.message)
       }
-
-    }
-    catch(e)
-    {
+    } catch(e){
       alert(e.message)
     }
   }
@@ -51,29 +69,33 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={formik.handleSubmit}>
                     <h1>Login</h1>
                     <p className="text-muted">Sign In to your account</p>
                     <p className="text-danger">{message}</p>
+                    <p className="text-warning field_validate_label" >{formik.errors.email?formik.errors.email:null}</p>
                     <CInputGroup className="mb-3">
                       <CInputGroupPrepend>
                         <CInputGroupText>
                           <CIcon name="cil-user" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="email" placeholder="Email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)}  />
+
+                      <CInput id="email" name="email" type="email" placeholder="Email" autoComplete="username" value={formik.values.email} onChange={formik.handleChange}  />
                     </CInputGroup>
+
+                    <p className="text-warning field_validate_label" >{formik.errors.password?formik.errors.password:null}</p>
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
                         <CInputGroupText>
                           <CIcon name="cil-lock-locked" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="password" placeholder="Password" autoComplete="current-password" value={pass} onChange={e => setPass(e.target.value)}  />
+                      <CInput id="password" name="password" type="password" placeholder="Password" autoComplete="current-password" value={formik.values.password} onChange={formik.handleChange}  />
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
-                        <CButton onClick={user_login} color="primary" className="px-4">Login</CButton>
+                        <CButton type="submit" color="primary" className="px-4">Login</CButton>
                       </CCol>
                       <CCol xs="6" className="text-right">
                         <CButton color="link" className="px-0">Forgot password?</CButton>

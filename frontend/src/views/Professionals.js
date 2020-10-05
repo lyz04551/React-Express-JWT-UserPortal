@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import axios from '../services/api'
 import {
   CBadge,
   CCard,
@@ -21,7 +22,41 @@ const getBadge = status => {
   }
 }
 const fields = ['name','registered', 'role', 'status']
+const user_info = JSON.parse(localStorage.getItem('user_info'))
 const Professional = () =>{
+  useEffect(() => {
+    async function getProfessionals() {
+      try {
+          const response =  await axios.get('/professionals', {
+            headers: {
+              authorization: user_info.accessToken
+            }
+          })
+          if (response.data.professionals){
+            return response.data.professionals
+          } else if (response.message === "jwt expired") {
+            await getNewToken()
+            alert("Backend has any problem!")
+        }
+      } catch (e) {
+        alert(e.message)
+      }
+    }
+    async function getNewToken(){
+      try {
+        const newToken = await axios.post('/token', {token: user_info.refreshToken})
+        if (newToken.accessToken){
+          user_info.accessToken = newToken.accessToken
+          localStorage.setItem('user_info', user_info)
+          getProfessionals()
+        }
+      } catch (e) {
+        alert(e.message)
+      }
+
+    }
+    getProfessionals()
+  })
   return (
     <>
       <CRow className="justify-content-center">

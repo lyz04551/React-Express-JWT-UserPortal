@@ -14,33 +14,33 @@ const loading = (
     <div className="sk-spinner sk-spinner-pulse"></div>
   </div>
 )
-
 const TheContent = () => {
-  return (
-    <main className="c-main">
-      <CContainer fluid>
-        <Suspense fallback={loading}>
-          <Switch>
-            {routes.map((route, idx) => {
-              return route.component && (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  exact={route.exact}
-                  name={route.name}
-                  render={props => (
-                    <CFade>
-                      <route.component {...props} />
-                    </CFade>
-                  )} />
-              )
-            })}
-            <Redirect from="/" to="/login" />
-          </Switch>
-        </Suspense>
-      </CContainer>
-    </main>
-  )
+  const user_info = localStorage.getItem('user_info')
+    return (
+      <main className="c-main">
+        <CContainer fluid>
+          <Suspense fallback={loading}>
+            <Switch>
+              {
+                routes.map((route, idx) => {
+                  return route.component && user_info && (
+                    <Route
+                      key={idx}
+                      path={route.path}
+                      exact={route.exact}
+                      name={route.name}
+                      render={props => (
+                        <CFade>
+                          <route.component {...props} />
+                        </CFade>
+                      )} />
+                  )
+                })}
+              <Redirect from="/" to="/login" />
+            </Switch>
+          </Suspense>
+        </CContainer>
+      </main>
+    )
 }
-
 export default React.memo(TheContent)
