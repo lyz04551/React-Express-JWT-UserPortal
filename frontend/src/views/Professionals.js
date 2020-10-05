@@ -32,14 +32,28 @@ const Professional = () =>{
               authorization: user_info.accessToken
             }
           })
-        console.log(response)
-        if (response.data.professionals){
-          return response.data.professionals
-        } else
-          alert("Backend has any problem!")
+          if (response.data.professionals){
+            return response.data.professionals
+          } else if (response.message === "jwt expired") {
+            await getNewToken()
+            alert("Backend has any problem!")
+        }
       } catch (e) {
         alert(e.message)
       }
+    }
+    async function getNewToken(){
+      try {
+        const newToken = await axios.post('/token', {token: user_info.refreshToken})
+        if (newToken.accessToken){
+          user_info.accessToken = newToken.accessToken
+          localStorage.setItem('user_info', user_info)
+          getProfessionals()
+        }
+      } catch (e) {
+        alert(e.message)
+      }
+
     }
     getProfessionals()
   })
