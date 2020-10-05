@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  CBadge,
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
@@ -10,6 +9,8 @@ import {
 import CIcon from '@coreui/icons-react'
 
 const TheHeaderDropdown = () => {
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
+  const user_name = user_info.user.NAME
   return (
     <CDropdown
       inNav
@@ -18,7 +19,7 @@ const TheHeaderDropdown = () => {
     >
       <CDropdownToggle className="c-header-nav-link" caret={false}>
         <div className="c-avatar cil-vertical-align-center ">
-          <label className="pr-2">asdasdsd</label>
+          <label className="pr-2">{user_name}</label>
           <CImg
             src={'avatars/6.jpg'}
             className="c-avatar-img"
