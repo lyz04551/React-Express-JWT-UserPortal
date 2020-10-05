@@ -1,5 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import axios from '../services/api'
 
 import {
   CDropdown,
@@ -13,10 +14,17 @@ import CIcon from '@coreui/icons-react'
 const TheHeaderDropdown = () => {
   const history = useHistory()
   const user_info = JSON.parse(localStorage.getItem('user_info'))
-  const logout = () => {
-    localStorage.removeItem('user_info')
-    history.push('/')
+  async function logout() {
+    try {
+      localStorage.removeItem('user_info')
+      const response = await axios.post('/logout', { token: user_info.accessToken })
+      alert(response.data)
+      history.push('/')
+    } catch (e) {
+      alert(e.message)
+    }
   }
+
   return (
     <CDropdown
       inNav

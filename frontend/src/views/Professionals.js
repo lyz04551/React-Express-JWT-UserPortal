@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import axios from '../services/api'
 import {
   CBadge,
   CCard,
@@ -21,7 +22,27 @@ const getBadge = status => {
   }
 }
 const fields = ['name','registered', 'role', 'status']
+const user_info = JSON.parse(localStorage.getItem('user_info'))
 const Professional = () =>{
+  useEffect(() => {
+    async function getProfessionals() {
+      try {
+          const response =  await axios.get('/professionals', {
+            headers: {
+              authorization: user_info.accessToken
+            }
+          })
+        console.log(response)
+        if (response.data.professionals){
+          return response.data.professionals
+        } else
+          alert("Backend has any problem!")
+      } catch (e) {
+        alert(e.message)
+      }
+    }
+    getProfessionals()
+  })
   return (
     <>
       <CRow className="justify-content-center">

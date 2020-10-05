@@ -49,10 +49,7 @@ const Login = () => {
 
   async function user_login(values) {
     try {
-      const mail = 'tortuc@outlook.com';
-      const password = 'tortuc123!@#';
-      const response = await api.post('/login', { email: mail, pass: password })
-      console.log(response.data)
+      const response = await api.post('/login', { email: values.email, pass: values.password })
       if (response.data.user){
         localStorage.setItem('user_info', JSON.stringify(response.data))
         history.push('/professionals')
