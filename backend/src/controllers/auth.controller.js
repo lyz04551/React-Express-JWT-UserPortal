@@ -1,5 +1,6 @@
 'use strict';
 const Auth = require('../models/user.model')
+const Role = require('../models/role.model')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const accessTokenSecret = "t"
@@ -39,13 +40,15 @@ exports.create = function (req, res){
 // }
 exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
-
     if (authHeader) {
-        const token = authHeader.split(' ')[1];
+        const token = authHeader
+        console.log(token)
         jwt.verify(token, accessTokenSecret, (err, user) => {
-            if (err)
-                return res.sendStatus(403)
+            if (err) {
+                return err.message === "jwt expired"? res.json({message: "jwt expired"}): res.sendStatus(403)
+            }
             req.user = user
+            console.log(user)
             next()
         })
     } else
@@ -53,23 +56,32 @@ exports.authenticateJWT = (req, res, next) => {
 }
 exports.login = (req, res) => {
     const { email, pass } = req.body
+
     Auth.findByEmail(email, function (err, user) {
         if (err)
             res.send(err)
         if (user.length === 0)
-            res.send("Account is not exist")
+            res.json({
+                message: "Account is not exist"
+            })
         else {
-            const match = bcrypt.compareSync(pass, user[0].pass)
-            if (match) {
-                const accessToken = jwt.sign({ username: user[0].username, role: 'admin' }, accessTokenSecret,
-                    { expiresIn: '20m' })
-                const refreshToken = jwt.sign({ username: user[0].username, role: 'admin' }, refreshTokenSecret)
-                refreshTokens.push(refreshToken)
-
-                res.json({
-                    accessToken, refreshToken
-                })
-            }
+            Role.getByGroupID(user[0].usergroup_id, (error, roles) => {
+                const match = bcrypt.compareSync(pass, user[0].pass)
+                if (match) {
+                    const accessToken = jwt.sign({ username: user[0].username, role: user[0].usergroup_id }, accessTokenSecret,
+                        { expiresIn: '20m' })
+                    const refreshToken = jwt.sign({ username: user[0].username, role: user[0].usergroup_id }, refreshTokenSecret)
+                    refreshTokens.push(refreshToken)
+                    user[0].roles = roles
+                    res.json({
+                        accessToken, refreshToken, user: user[0]
+                    })
+                } else {
+                    res.json({
+                        message: "Password is not correct."
+                    })
+                }
+            })
         }
     })
 }
@@ -98,6 +110,10 @@ exports.token = (req, res) => {
 }
 exports.logout = (req, res) => {
     const token = req.body.token;
-    refreshTokens = refreshTokens.filter(token => t !== token);
+    console.log(refreshTokens)
+    const result = refreshTokens.filter(saved_token => saved_token !== token);
+    const leng = refreshTokens.length;
+    refreshTokens.splice(0, leng, result)
+    console.log(refreshTokens)
     res.send("Logout successful");
 }

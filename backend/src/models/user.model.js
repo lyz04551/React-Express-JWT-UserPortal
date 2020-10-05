@@ -28,7 +28,14 @@ Auth.create = function(data, result){
     })
 }
 Auth.findByEmail = function (email, result) {
-    dbConn.query("Select * from users where email = ?", email, function (err, res) {
+    let val = []
+    dbConn.query("SELECT users.`id`, NAME, username, email, pass, initcode, cpf, birthday, gender, MASTER, active, fk_professional, fk_license, deleted, creation_timestamp, usergroup_id, usergroup.`nome`\n" +
+        "FROM users\n" +
+        "LEFT JOIN users_usergroup\n" +
+        "ON users.`id` = users_usergroup.`users_id`\n" +
+        "LEFT JOIN usergroup\n" +
+        "ON usergroup_id = usergroup.`id`\n" +
+        "WHERE email = ?", email, function (err, res) {
         if (err) {
             console.log("error:", err)
             result(err, null);
@@ -37,4 +44,5 @@ Auth.findByEmail = function (email, result) {
         }
     })
 }
+
 module.exports = Auth;

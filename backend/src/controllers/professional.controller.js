@@ -1,11 +1,13 @@
 'use strict';
-const professional = require('../models/professional.model');
+const Professional = require('../models/professional.mode');
 
 exports.getAll = function (req, res) {
-    professional.getAll(function(err, professional) {
+    Professional.getAll(function(err, professionals) {
         console.log('controller')
-        if (err) res.send(err)
-        console.log('res', professional)
-        res.send(professional)
+        if (err) res.json({
+            message: err.message
+        })
+        console.log('res', professionals)
+        res.send({professionals})
     });
 }
