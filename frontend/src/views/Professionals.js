@@ -18,9 +18,31 @@ import Modal from './Modal'
 const Professional = () =>{
   const history = useHistory()
   const [professionalData, setProfessinalData] = useState([])
+  const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
-  const fields = ['id','name', 'gender', 'birthday', 'email', 'comment', 'picture', 'deleted', 'fk_license', 'action']
+  const [rowID, setRowID] =useState(null)
+  const fields = ['id','picture', 'name', 'gender', 'birthday', 'email', 'comment', 'deleted', 'fk_license', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
+
+  const hanldeShowModal = () => {
+    setRowID(null)
+    setShowModal(!showModal)
+  }
+
+  const addOrEdit = (id) => {
+    setRowID(id)
+  }
+
+  const deleteRow = (rowID) => {
+    axios.delete('/professionals/' + rowID, {
+      headers: {
+        authorization: user_info.accessToken
+      }
+    }).then(res => {
+      alert(res.data.message)
+      handleAddNew()
+    }).catch(err => alert(err.message))
+  }
 
   useEffect(() => {
        axios.get('/professionals', {
@@ -36,7 +58,13 @@ const Professional = () =>{
             localStorage.removeItem('user_info')
           }
         }).catch(err => alert(err.message))
-  }, [status]);
+  }, [status])
+
+  useEffect(() => {
+    if (rowID !== null){
+      setShowModal(!showModal)
+    }
+  }, [rowID])
 
   function handleAddNew() {
     setStatus(status + 1)
@@ -49,7 +77,10 @@ const Professional = () =>{
           <CCard>
             <CCardHeader >
               <CRow>
-                <CCol><Modal handleAddNew={handleAddNew} /></CCol>
+                <CCol>
+                  <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
+                  <Modal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                </CCol>
               </CRow>
             </CCardHeader>
             <CCardBody>
@@ -66,6 +97,13 @@ const Professional = () =>{
                         {index + 1}
                       </td>
                   ),
+                  'picture': (item) => (
+                    <td>
+                      <div className={'c-avatar'}>
+                        <img className={'c-avatar-img'} src={item.picture} alt={''}/>
+                      </div>
+                    </td>
+                  ),
                   'gender':
                     (item)=>(
                       <td>
@@ -81,10 +119,10 @@ const Professional = () =>{
                     <td width={102}>
                     <CRow>
                       <CCol>
-                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                        <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                       </CCol>
                       <CCol>
-                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                        <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
                       </CCol>
                     </CRow>
                     </td>

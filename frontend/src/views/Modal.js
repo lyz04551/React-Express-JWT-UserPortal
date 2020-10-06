@@ -13,17 +13,18 @@ import {
   CForm,
   CFormGroup,
   CInput,
+  CFormText
 } from '@coreui/react';
 
-const Modal = ({handleAddNew}) => {
-  const [modal, setModal] = useState(false)
-  const toggle = () => {
-    setModal(!modal)
-  }
-
+const Modal = (props) => {
+  const [mess, setMess] = useState('')
   function handleAddNewOne() {
     // console.log("123");
-    handleAddNew();
+    props.handleAddNew();
+  }
+  const handleDisplay = () => {
+    setMess('')
+    props.handleDisplay()
   }
 
   const validate = values => {
@@ -64,15 +65,29 @@ const Modal = ({handleAddNew}) => {
   async function add_new(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
+      let response = null
+      console.log(props.rowID)
       try {
-        const response = await axios.post('/professionals', values, {
-          headers: {
-            authorization: user_info.accessToken
-          }
-        })
+        if (props.rowID === -1){
+          response = await axios.post('/professionals', values, {
+            headers: {
+              authorization: user_info.accessToken
+            }
+          })
+        }
+        if (props.rowID >= 0) {
+          response = await axios.put('/professionals/' + props.rowID, values, {
+            headers: {
+              authorization: user_info.accessToken
+            }
+          })
+        }
         if (response.data.message === "Success"){
           handleAddNewOne();
-          toggle()
+          handleDisplay()
+        } else {
+          setMess(response.data.message)
+          console.log(mess)
         }
       } catch (e) {
         alert(e.message)
@@ -83,10 +98,9 @@ const Modal = ({handleAddNew}) => {
 
   return (
     <>
-      <CButton onClick={toggle} className="px-5" color="info">+ Add New</CButton>
       <CModal
-        show={modal}
-        onClose={toggle}
+        show={props.display}
+        onClose={(e)=>handleDisplay()}
         size="lg"
         color={'info'}
       >
@@ -123,6 +137,7 @@ const Modal = ({handleAddNew}) => {
                   <CInputFile id="picture" name="picture" value={formik.values.picture} onChange={formik.handleChange}/>
                 </CCol>
               </CRow>
+              <CFormText className="help-block" color={'danger'}>{mess}</CFormText>
             </CFormGroup>
           </CForm>
         </CModalBody>
@@ -130,7 +145,7 @@ const Modal = ({handleAddNew}) => {
           <CButton onClick={formik.handleSubmit} type="submit" color="info">Submit</CButton>{' '}
           <CButton
             color="secondary"
-            onClick={toggle}
+            onClick={(e) => handleDisplay()}
           >Cancel</CButton>
         </CModalFooter>
       </CModal>
