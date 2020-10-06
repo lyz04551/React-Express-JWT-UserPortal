@@ -9,7 +9,7 @@ import {
   CRow
 } from '@coreui/react'
 
-import usersData from './users/UsersData'
+import userGroup from './users/UserGroup'
 
 const getBadge = status => {
   switch (status) {
@@ -31,25 +31,7 @@ const Professional = () =>{
               Simple Table
             </CCardHeader>
             <CCardBody>
-              <CDataTable
-                items={usersData}
-                fields={fields}
-                itemsPerPageSelect
-                itemsPerPage={5}
-                pagination
-                tableFilter
-                scopedSlots = {{
-                  'status':
-                    (item)=>(
-                      <td>
-                        <CBadge color={getBadge(item.status)}>
-                          {item.status}
-                        </CBadge>
-                      </td>
-                    )
 
-                }}
-              />
             </CCardBody>
           </CCard>
         </CCol>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import {
   CButton,
@@ -61,6 +61,12 @@ const Login = () => {
       alert(e.message)
     }
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('user_info')){
+      history.push('/professionals')
+    }
+  })
 
   return (
     <div className="c-app c-default-layout flex-row align-items-center">

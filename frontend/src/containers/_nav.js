@@ -17,6 +17,18 @@ export default [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Users',
+    to: '/users',
+    icon: 'cil-people'
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'User Group',
+    to: '/usergroup',
+    icon: 'cil-grid'
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Categories',
     to: '/categories',
     icon: 'cil-tags'

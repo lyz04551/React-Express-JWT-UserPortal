@@ -45,19 +45,19 @@ const Professional = () =>{
   }
 
   useEffect(() => {
-       axios.get('/professionals', {
-          headers: {
-            authorization: user_info.accessToken
-          }
-        }).then(res => {
-          if (res.data.professionals){
-            const val = res.data.professionals
-            setProfessinalData(val)
-          } else {
-            history.push('/')
-            localStorage.removeItem('user_info')
-          }
-        }).catch(err => alert(err.message))
+      axios.get('/professionals', {
+        headers: {
+          authorization: user_info.accessToken
+        }
+      }).then(res => {
+        if (res.data.professionals) {
+          const val = res.data.professionals
+          setProfessinalData(val)
+        } else {
+          history.push('/')
+          localStorage.removeItem('user_info')
+        }
+      }).catch(err => alert(err.message))
   }, [status])
 
   useEffect(() => {
