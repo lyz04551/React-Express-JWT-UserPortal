@@ -15,11 +15,17 @@ import {
   CInput,
 } from '@coreui/react';
 
-const Modal = () => {
+const Modal = ({handleAddNew}) => {
   const [modal, setModal] = useState(false)
   const toggle = () => {
     setModal(!modal)
   }
+
+  function handleAddNewOne() {
+    // console.log("123");
+    handleAddNew();
+  }
+
   const validate = values => {
     const errors = {};
     if (!values.name ) {
@@ -46,7 +52,7 @@ const Modal = () => {
       email: "",
       comment: "",
       picture: "",
-      deleted: '1',
+      deleted: '0',
       fk_license: ""
     },
     validate,
@@ -64,7 +70,10 @@ const Modal = () => {
             authorization: user_info.accessToken
           }
         })
-        alert(response.data)
+        if (response.data.message === "Success"){
+          handleAddNewOne();
+          toggle()
+        }
       } catch (e) {
         alert(e.message)
       }
@@ -74,11 +83,12 @@ const Modal = () => {
 
   return (
     <>
-      <CButton onClick={toggle} variant="outline" size="sm" className="px-5" color="success">Add New</CButton>
+      <CButton onClick={toggle} className="px-5" color="info">+ Add New</CButton>
       <CModal
         show={modal}
         onClose={toggle}
         size="lg"
+        color={'info'}
       >
         <CModalHeader closeButton>New Professional</CModalHeader>
         <CModalBody>
@@ -117,7 +127,7 @@ const Modal = () => {
           </CForm>
         </CModalBody>
         <CModalFooter>
-          <CButton onClick={formik.handleSubmit} type="submit" color="primary">Submit</CButton>{' '}
+          <CButton onClick={formik.handleSubmit} type="submit" color="info">Submit</CButton>{' '}
           <CButton
             color="secondary"
             onClick={toggle}

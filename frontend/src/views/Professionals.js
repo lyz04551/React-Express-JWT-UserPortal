@@ -9,53 +9,47 @@ import {
   CCol,
   CDataTable,
   CRow,
+  CButton,
 } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
 
 import Modal from './Modal'
 
-const getBadge = status => {
-  switch (status) {
-    case 'Active': return 'success'
-    case 'Inactive': return 'secondary'
-    case 'Pending': return 'warning'
-    case 'Banned': return 'danger'
-    default: return 'primary'
-  }
-}
-const fields = ['id','name', 'gender', 'birthday', 'email', 'comment', 'picture', 'deleted', 'fk_license']
-const user_info = JSON.parse(localStorage.getItem('user_info'))
-
 const Professional = () =>{
-  const [professionalData, setProfessinalData] = useState([])
   const history = useHistory()
-  useEffect(() => {
-    async function getProfessionals() {
+  const [professionalData, setProfessinalData] = useState([])
+  const [status, setStatus] = useState(0)
+  const fields = ['id','name', 'gender', 'birthday', 'email', 'comment', 'picture', 'deleted', 'fk_license', 'action']
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
 
-          await axios.get('/professionals', {
-            headers: {
-              authorization: user_info.accessToken
-            }
-          }).then(res => {
-            if (res.data.professionals){
-              console.log(res.data.professionals)
-              const val = res.data.professionals
-              setProfessinalData(val)
-            } else {
-              history.push('/')
-              localStorage.removeItem('user_info')
-            }
-          }).catch(err => alert(err.message))
-    }
-    getProfessionals()
-  })
+  useEffect(() => {
+       axios.get('/professionals', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        }).then(res => {
+          if (res.data.professionals){
+            const val = res.data.professionals
+            setProfessinalData(val)
+          } else {
+            history.push('/')
+            localStorage.removeItem('user_info')
+          }
+        }).catch(err => alert(err.message))
+  }, [status]);
+
+  function handleAddNew() {
+    setStatus(status + 1)
+  }
+
   return (
     <>
       <CRow className="justify-content-center">
-        <CCol md="8">
+        <CCol md="12">
           <CCard>
             <CCardHeader >
               <CRow>
-                <CCol><Modal /></CCol>
+                <CCol><Modal handleAddNew={handleAddNew} /></CCol>
               </CRow>
             </CCardHeader>
             <CCardBody>
@@ -67,15 +61,35 @@ const Professional = () =>{
                 pagination
                 tableFilter
                 scopedSlots = {{
-                  'status':
+                  'id' : (item, index) => (
+                      <td>
+                        {index + 1}
+                      </td>
+                  ),
+                  'gender':
                     (item)=>(
                       <td>
-                        <CBadge color={getBadge(item.status)}>
-                          {item.status}
+                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
+                          {item.gender === 0? "Male" : "Female"}
                         </CBadge>
                       </td>
-                    )
-                }}
+                    ),
+                  'deleted':(item) => (
+                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                  ),
+                  'action': (item) => (
+                    <td width={102}>
+                    <CRow>
+                      <CCol>
+                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                      </CCol>
+                      <CCol>
+                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                      </CCol>
+                    </CRow>
+                    </td>
+                  )
+                 }}
               />
             </CCardBody>
           </CCard>
