@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
+import {useHistory} from 'react-router-dom'
 import axios from '../services/api'
 import {
   CBadge,
@@ -7,87 +8,94 @@ import {
   CCardHeader,
   CCol,
   CDataTable,
-  CRow
+  CRow,
+  CButton,
 } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
 
-import usersData from './users/UsersData'
+import Modal from './Modal'
 
-const getBadge = status => {
-  switch (status) {
-    case 'Active': return 'success'
-    case 'Inactive': return 'secondary'
-    case 'Pending': return 'warning'
-    case 'Banned': return 'danger'
-    default: return 'primary'
-  }
-}
-const fields = ['name','registered', 'role', 'status']
-const user_info = JSON.parse(localStorage.getItem('user_info'))
 const Professional = () =>{
-  useEffect(() => {
-    async function getProfessionals() {
-      try {
-          const response =  await axios.get('/professionals', {
-            headers: {
-              authorization: user_info.accessToken
-            }
-          })
-          if (response.data.professionals){
-            return response.data.professionals
-          } else if (response.message === "jwt expired") {
-            await getNewToken()
-            alert("Backend has any problem!")
-        }
-      } catch (e) {
-        alert(e.message)
-      }
-    }
-    async function getNewToken(){
-      try {
-        const newToken = await axios.post('/token', {token: user_info.refreshToken})
-        if (newToken.accessToken){
-          user_info.accessToken = newToken.accessToken
-          localStorage.setItem('user_info', user_info)
-          getProfessionals()
-        }
-      } catch (e) {
-        alert(e.message)
-      }
+  const history = useHistory()
+  const [professionalData, setProfessinalData] = useState([])
+  const [status, setStatus] = useState(0)
+  const fields = ['id','name', 'gender', 'birthday', 'email', 'comment', 'picture', 'deleted', 'fk_license', 'action']
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
 
-    }
-    getProfessionals()
-  })
+  useEffect(() => {
+       axios.get('/professionals', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        }).then(res => {
+          if (res.data.professionals){
+            const val = res.data.professionals
+            setProfessinalData(val)
+          } else {
+            history.push('/')
+            localStorage.removeItem('user_info')
+          }
+        }).catch(err => alert(err.message))
+  }, [status]);
+
+  function handleAddNew() {
+    setStatus(status + 1)
+  }
+
   return (
     <>
       <CRow className="justify-content-center">
-        <CCol md="8">
+        <CCol md="12">
           <CCard>
-            <CCardHeader>
-              Simple Table
+            <CCardHeader >
+              <CRow>
+                <CCol><Modal handleAddNew={handleAddNew} /></CCol>
+              </CRow>
             </CCardHeader>
             <CCardBody>
               <CDataTable
-                items={usersData}
+                items={professionalData}
                 fields={fields}
                 itemsPerPageSelect
                 itemsPerPage={5}
                 pagination
                 tableFilter
                 scopedSlots = {{
-                  'status':
+                  'id' : (item, index) => (
+                      <td>
+                        {index + 1}
+                      </td>
+                  ),
+                  'gender':
                     (item)=>(
                       <td>
-                        <CBadge color={getBadge(item.status)}>
-                          {item.status}
+                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
+                          {item.gender === 0? "Male" : "Female"}
                         </CBadge>
                       </td>
-                    )
-                }}
+                    ),
+                  'deleted':(item) => (
+                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                  ),
+                  'action': (item) => (
+                    <td width={102}>
+                    <CRow>
+                      <CCol>
+                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                      </CCol>
+                      <CCol>
+                        <CButton id={item.id} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                      </CCol>
+                    </CRow>
+                    </td>
+                  )
+                 }}
               />
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
+
     </>
   );
 }
