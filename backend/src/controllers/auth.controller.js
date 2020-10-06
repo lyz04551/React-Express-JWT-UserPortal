@@ -44,11 +44,11 @@ exports.authenticateJWT = (req, res, next) => {
         const token = authHeader
         console.log(token)
         jwt.verify(token, accessTokenSecret, (err, user) => {
+            console.log(err)
             if (err) {
                 return err.message === "jwt expired"? res.json({message: "jwt expired"}): res.sendStatus(403)
             }
             req.user = user
-            console.log(user)
             next()
         })
     } else
