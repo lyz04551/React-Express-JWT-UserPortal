@@ -34,7 +34,14 @@ const Professional = () =>{
   }
 
   const deleteRow = (rowID) => {
-
+    axios.delete('/professionals/' + rowID, {
+      headers: {
+        authorization: user_info.accessToken
+      }
+    }).then(res => {
+      alert(res.data.message)
+      handleAddNew()
+    }).catch(err => alert(err.message))
   }
 
   useEffect(() => {
@@ -115,7 +122,7 @@ const Professional = () =>{
                         <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                       </CCol>
                       <CCol>
-                        <CButton  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                        <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
                       </CCol>
                     </CRow>
                     </td>
