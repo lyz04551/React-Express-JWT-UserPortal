@@ -15,7 +15,7 @@ import {
   CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import api from '../../../services/api'
+import axios from '../../../services/api'
 import { useFormik } from 'formik';
 
 const Login = () => {
@@ -49,9 +49,10 @@ const Login = () => {
 
   async function user_login(values) {
     try {
-      const response = await api.post('/login', { email: values.email, pass: values.password })
+      const response = await axios.post('/login', { email: values.email, pass: values.password })
       if (response.data.user){
         localStorage.setItem('user_info', JSON.stringify(response.data))
+        console.log(JSON.parse(localStorage.getItem('user_info')))
         history.push('/professionals')
       } else {
         setMessage(response.data.message)

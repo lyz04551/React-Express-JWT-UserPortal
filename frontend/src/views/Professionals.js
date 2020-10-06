@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react';
+import {useHistory} from 'react-router-dom'
 import axios from '../services/api'
 import {
   CBadge,
@@ -7,10 +8,10 @@ import {
   CCardHeader,
   CCol,
   CDataTable,
-  CRow
+  CRow,
 } from '@coreui/react'
 
-import usersData from './users/UsersData'
+import Modal from './Modal'
 
 const getBadge = status => {
   switch (status) {
@@ -21,39 +22,29 @@ const getBadge = status => {
     default: return 'primary'
   }
 }
-const fields = ['name','registered', 'role', 'status']
+const fields = ['id','name', 'gender', 'birthday', 'email', 'comment', 'picture', 'deleted', 'fk_license']
 const user_info = JSON.parse(localStorage.getItem('user_info'))
+
 const Professional = () =>{
+  const [professionalData, setProfessinalData] = useState([])
+  const history = useHistory()
   useEffect(() => {
     async function getProfessionals() {
-      try {
-          const response =  await axios.get('/professionals', {
+
+          await axios.get('/professionals', {
             headers: {
               authorization: user_info.accessToken
             }
-          })
-          if (response.data.professionals){
-            return response.data.professionals
-          } else if (response.message === "jwt expired") {
-            await getNewToken()
-            alert("Backend has any problem!")
-        }
-      } catch (e) {
-        alert(e.message)
-      }
-    }
-    async function getNewToken(){
-      try {
-        const newToken = await axios.post('/token', {token: user_info.refreshToken})
-        if (newToken.accessToken){
-          user_info.accessToken = newToken.accessToken
-          localStorage.setItem('user_info', user_info)
-          getProfessionals()
-        }
-      } catch (e) {
-        alert(e.message)
-      }
-
+          }).then(res => {
+            if (res.data.professionals){
+              console.log(res.data.professionals)
+              const val = res.data.professionals
+              setProfessinalData(val)
+            } else {
+              history.push('/')
+              localStorage.removeItem('user_info')
+            }
+          }).catch(err => alert(err.message))
     }
     getProfessionals()
   })
@@ -62,12 +53,14 @@ const Professional = () =>{
       <CRow className="justify-content-center">
         <CCol md="8">
           <CCard>
-            <CCardHeader>
-              Simple Table
+            <CCardHeader >
+              <CRow>
+                <CCol><Modal /></CCol>
+              </CRow>
             </CCardHeader>
             <CCardBody>
               <CDataTable
-                items={usersData}
+                items={professionalData}
                 fields={fields}
                 itemsPerPageSelect
                 itemsPerPage={5}
@@ -88,6 +81,7 @@ const Professional = () =>{
           </CCard>
         </CCol>
       </CRow>
+
     </>
   );
 }
