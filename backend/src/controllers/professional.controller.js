@@ -24,3 +24,9 @@ exports.update = function (req, res) {
         else res.json({message: "Success"})
     })
 }
+exports.delete = function (req, res) {
+    Professional.delete(req.params.id, (err, result) => {
+        if (err) res.json({message: err.message})
+        else res.json({message: 'Success'})
+    })
+}

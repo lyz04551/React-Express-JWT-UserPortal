@@ -53,4 +53,12 @@ Professional.update = (id, data, result) => {
     })
 }
 
+Professional.delete = (id, result) => {
+    const val = JSON.stringify(id)
+    const sql = "DELETE FROM professionals WHERE id=" + val
+    dbConn.query(sql, (err, res) => {
+        if (err) result(err.message, null)
+        else result(null, res)
+    })
+}
 module.exports = Professional
