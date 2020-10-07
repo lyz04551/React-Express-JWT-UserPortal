@@ -9,7 +9,6 @@ import {
   CModalFooter,
   CModalHeader,
   CRow, CCol,
-  CInputFile,
   CForm,
   CFormGroup,
   CInput,
@@ -123,46 +122,6 @@ const UserGroupModal = (props) => {
                 <CCol>
                   <CInput id="username" name="username" placeholder="User Name" value={formik.values.username} onChange={formik.handleChange} />
                   <p className="text-warning" >{formik.errors.username?formik.errors.username:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput id="email" name="email" type="email" placeholder="Email" value={formik.values.email} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.email?formik.errors.email:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput id="pass" name="pass" type={'password'} placeholder="pass" value={formik.values.pass} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.pass?formik.errors.pass:null}</p>
-                </CCol>
-              </CRow>
-
-              <CRow>
-                <CCol>
-                  <CInput id="cpf" name="cpf" placeholder="Cpf" value={formik.values.cpf} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.cpf?formik.errors.cpf:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput id="birthday" name="birthday" placeholder="Birthday" value={formik.values.birthday} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.birthday?formik.errors.birthday:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput id="gender" name="gender" placeholder="Gender(0 or 1)" value={formik.values.gender} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput id="master" name="master" placeholder="Master 0 or 1" value={formik.values.master} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.master?formik.errors.master:null}</p>
-                </CCol>
-              </CRow>
-
-              <CRow>
-                <CCol>
-                  <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
-                </CCol>
-                <CCol>
-                  <CInput id="fk_professional" name="fk_professional" placeholder="Fk Professional" value={formik.values.fk_professional} onChange={formik.handleChange}/>
-                </CCol>
-                <CCol>
-                  <CInput id="initcode" name="initcode" placeholder="InitCode" value={formik.values.initcode} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.initcode?formik.errors.initcode:null}</p>
                 </CCol>
               </CRow>
 
