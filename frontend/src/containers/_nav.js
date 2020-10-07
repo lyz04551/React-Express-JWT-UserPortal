@@ -17,6 +17,16 @@ export default [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Categories',
+    to: '/categories',
+    icon: 'cil-tags'
+  },
+  {
+    _tag: 'CSidebarNavTitle',
+    _children: ['Role and Permission']
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Users',
     to: '/users',
     icon: 'cil-people'
@@ -27,12 +37,7 @@ export default [
     to: '/usergroup',
     icon: 'cil-grid'
   },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Categories',
-    to: '/categories',
-    icon: 'cil-tags'
-  },
+
   {
     _tag: 'CSidebarNavDivider',
     className: 'm-2'
