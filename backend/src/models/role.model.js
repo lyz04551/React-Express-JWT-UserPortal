@@ -16,5 +16,10 @@ Role.getByGroupID = (id, result) => {
         }
     })
 }
-
+Role.getAll = (result) => {
+    dbConn.query("Select * from roles", null, (err, res) => {
+        if (err) result(err, null)
+        else result(null, res)
+    })
+}
 module.exports = Role

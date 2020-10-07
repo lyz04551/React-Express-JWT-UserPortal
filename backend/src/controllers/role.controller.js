@@ -9,3 +9,9 @@ exports.getByGroupID = (req, res) => {
             res.json({message: err.message})
     })
 }
+exports.getAll = (req, res) => {
+    Role.getAll((err, roles) => {
+        if (err) res.json({message: err.message})
+        else res.json({roles})
+    })
+}
