@@ -8,36 +8,50 @@ const refreshTokenSecret = "e"
 const refreshTokens = []
 const saltRounds = 10
 
-exports.findAll = function (req, res) {
-    auth.getAll(function(err, professional) {
+exports.getdAll = function (req, res) {
+    Auth.getAll(function(err, users) {
         console.log('controller')
         if (err) res.send(err)
-        console.log('res', professional)
-        res.send(professional)
+        else res.json({users})
     })
 }
 exports.create = function (req, res){
-    const new_user = new Auth(req.body)
 
 //    handles null error
     if (req.body.constructor === Object && Object.keys(req.body).length === 0){
         console.log(req.body)
         res.status(400).send({error: true, message: 'Please provide all required field'})
     } else {
-        Auth.create(new_user, function (err, user) {
-            if (err)
-                res.send(err)
-            res.send({error:false, message: 'User added successfully!', data: user})
+        req.body.pass = bcrypt.hashSync(req.body.pass, saltRounds)
+        const new_user = new Auth(req.body)
+        Auth.create(new_user, (err, user) => {
+            if (err) res.send(err)
+            if (user.length > 0) res.json({message: "User is already exist. Please enter another Email or User Name."})
+            else res.json({message: "Success"})
         })
     }
 }
-// exports.findById = function (req, res) {
-//     Auth.findById(req.params.id, function (err, user) {
-//         if (err)
-//             res.send(err)
-//         res.json(user)
-//     })
-// }
+exports.update = (req, res) => {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0){
+        console.log(req.body)
+        res.status(400).send({error: true, message: 'Please provide all required field'})
+    } else {
+        req.body.pass = bcrypt.hashSync(req.body.pass, saltRounds)
+        const new_user = new Auth(req.body)
+        Auth.update(req.params.id, new_user, (err, user) => {
+            console.log(err)
+            if (err) res.send(err)
+            else res.json({message: "Success"})
+        })
+    }
+}
+exports.delete = (req, res) => {
+    Auth.delete(req.params.id, (err, user) => {
+        if (err) res.json({message: err.message})
+        else res.json({message: 'Success'})
+    })
+}
+
 exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (authHeader) {

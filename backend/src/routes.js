@@ -3,14 +3,18 @@ const router = express.Router();
 const authController = require('./controllers/auth.controller')
 const professionalController = require('./controllers/professional.controller')
 const roleController = require('./controllers/role.controller')
-// Retrieve all User
 // router.get('/', authController.findAll);
 
-// Create a new User
-router.post('/', authController.create);
-router.post('/login', authController.login);
-router.post('/logout', authController.logout);
-router.post('/token', authController.token);
+
+router.post('/login', authController.login)
+router.post('/logout', authController.logout)
+router.post('/token', authController.token)
+
+// Retrieve all User
+router.get('/', authController.authenticateJWT, authController.getdAll)
+router.post('/', authController.authenticateJWT, authController.create)
+router.put('/:id', authController.authenticateJWT, authController.update)
+router.delete('/:id', authController.authenticateJWT, authController.delete)
 
 // Retrieve roles of single group
 router.get('/roles:id', roleController.getByGroupID)
