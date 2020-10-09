@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import axios from '../../services/api'
+import Select from 'react-select';
 import { useFormik } from 'formik';
 
 import {
@@ -9,7 +10,6 @@ import {
   CModalFooter,
   CModalHeader,
   CRow, CCol,
-  CInputFile,
   CForm,
   CFormGroup,
   CInput,
@@ -17,9 +17,11 @@ import {
 } from '@coreui/react';
 
 const UserModal = (props) => {
+  console.log(props.group)
+
   const [mess, setMess] = useState('')
+  const [selectedOption, setSelectedOption] = useState([])
   function handleAddNewOne() {
-    // console.log("123");
     props.handleAddNew();
   }
   const handleDisplay = () => {
@@ -135,6 +137,13 @@ const UserModal = (props) => {
               </CRow>
 
               <CRow>
+                <CCol>
+                  <Select defaultValue={selectedOption}
+                          onChange={setSelectedOption}
+                          options={props.group}
+                  />
+                  <p className="text-warning" >{formik.errors.cpf?formik.errors.cpf:null}</p>
+                </CCol>
                 <CCol>
                   <CInput id="cpf" name="cpf" placeholder="Cpf" value={formik.values.cpf} onChange={formik.handleChange} />
                   <p className="text-warning" >{formik.errors.cpf?formik.errors.cpf:null}</p>

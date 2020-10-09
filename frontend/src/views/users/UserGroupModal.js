@@ -15,7 +15,6 @@ import {
   CFormGroup,
   CInput,
   CFormText,
-  CSelect
 } from '@coreui/react';
 
 const UserGroupModal = (props) => {

@@ -7,7 +7,7 @@ export default [
     _tag: 'CSidebarNavItem',
     name: 'Professionals',
     to: '/professionals',
-    icon: 'cil-people'
+    icon: 'cil-people',
   },
   {
     _tag: 'CSidebarNavItem',
@@ -23,19 +23,22 @@ export default [
   },
   {
     _tag: 'CSidebarNavTitle',
-    _children: ['Role and Permission']
+    _children: ['Role and Permission'],
+    role: 'admin'
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'Users',
     to: '/users',
-    icon: 'cil-people'
+    icon: 'cil-people',
+    role: 'admin'
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'User Group',
     to: '/usergroup',
-    icon: 'cil-grid'
+    icon: 'cil-grid',
+    role: 'admin'
   },
 
   {

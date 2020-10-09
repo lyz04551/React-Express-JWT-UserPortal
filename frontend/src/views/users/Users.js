@@ -11,10 +11,10 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
+  const [group, setGroup] = useState([])
   const fields = ['id','name', 'username', 'email', 'pass', 'initcode', 'cpf', 'birthday', 'gender', 'master', 'active', 'fk_professional', 'fk_license', 'deleted', 'creation_timestamp', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   const hanldeShowModal = () => {
-    console.log('adsfadsfadfadsf')
     setRowID(null)
     setShowModal(!showModal)
   }
@@ -35,19 +35,42 @@ const Users = () => {
   }
 
   useEffect(() => {
-    axios.get('/', {
-      headers: {
-        authorization: user_info.accessToken
-      }
-    }).then(res => {
-      console.log(res)
-      if (res.data.users) {
-        setProfessinalData(res.data.users)
-      } else {
-        history.push('/')
-        localStorage.removeItem('user_info')
-      }
-    }).catch(err => alert(err.message))
+      async function getAllUser(){
+       try {
+         const res = await axios.get('/', {
+           headers: {
+             authorization: user_info.accessToken
+           }
+         })
+         if (res.data.users) {
+           setProfessinalData(res.data.users)
+           await getGroups()
+         } else redirect()
+       } catch (err) {
+         alert(err.message)
+       }}
+
+       async function getGroups(){
+        try {
+          const res = await axios.get('/usergroup-list', {
+            headers: {
+              authorization: user_info.accessToken
+            }
+          })
+          if (res.data.group) {
+            setGroup(res.data.group)
+          } else {
+            redirect();
+          }
+        } catch (e) {
+          alert(e.message)
+        }
+       }
+       const redirect = () => {
+          history.push('/login')
+          localStorage.removeItem('user_info')
+        }
+    getAllUser()
   }, [status])
 
   useEffect(() => {
@@ -68,7 +91,7 @@ const Users = () => {
               <CRow>
                 <CCol>
                   <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <UserModal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  <UserModal rowID={rowID} group={group}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                 </CCol>
               </CRow>
             </CCardHeader>
