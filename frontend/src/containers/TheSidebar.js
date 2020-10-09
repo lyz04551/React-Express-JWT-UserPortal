@@ -15,11 +15,28 @@ import {
 import CIcon from '@coreui/icons-react'
 
 // sidebar nav config
-import navigation from './_nav'
+import navList from './_nav'
 
 const TheSidebar = () => {
   const dispatch = useDispatch()
   const show = useSelector(state => state.sidebarShow)
+  const userInfo = JSON.parse(localStorage.getItem('user_info'))
+
+
+  const navigation = navList.filter(item => {
+    const res = item.role
+    console.log(userInfo)
+    if (res && userInfo){
+      const userRoles = userInfo.user.roles.map((item) => {return item.nome})
+      for (let i = 0; i < res.length; i++){
+        if (userRoles.includes(res[i])) {
+          return  true
+        }
+      }
+      return false
+    } else return false
+  })
+
 
   return (
     <CSidebar
