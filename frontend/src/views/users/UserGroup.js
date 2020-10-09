@@ -12,7 +12,10 @@ const UserGroup = () => {
   const [professionalData, setProfessinalData] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
-  const [rowID, setRowID] =useState(null)
+  const [rowID, setRowID] = useState(null)
+  const [role, setRole] = useState([])
+  // const [name, setName] = useState('<+>')
+  // const [ownRole, setOwnRole] = useState(null)
   const user_info = JSON.parse(localStorage.getItem('user_info'))
 
   const hanldeShowModal = () => {
@@ -25,7 +28,7 @@ const UserGroup = () => {
   }
 
   const deleteRow = (rowID) => {
-    axios.delete('/professionals/' + rowID, {
+    axios.delete('/usergroup/' + rowID, {
       headers: {
         authorization: user_info.accessToken
       }
@@ -36,19 +39,46 @@ const UserGroup = () => {
   }
 
   useEffect(() => {
-    axios.get('/group-together', {
-      headers: {
-        authorization: user_info.accessToken
+    async function getUsersGroup() {
+      try {
+        const res = await axios.get('/usergroup', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        })
+        console.log(res.data.group)
+        if (res.data.group) {
+          setProfessinalData(res.data.group)
+          await getRoles()
+        } else {
+          redirect()
+        }
+      } catch (e) {
+        alert(e.message)
       }
-    }).then(res => {
-      if (res.data.groups) {
-        console.log(res.data.groups)
-        setProfessinalData(res.data.groups)
-      } else {
-        history.push('/')
-        localStorage.removeItem('user_info')
+    }
+    async function getRoles(){
+      try {
+        const res = await axios.get('/roles', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        })
+        if (res.data.role){
+          setRole(res.data.role)
+        } else {
+          alert(res.data)
+          redirect()
+        }
+      } catch (e) {
+        alert(e.message)
       }
-    }).catch(err => alert(err.message))
+    }
+    const redirect = () => {
+      history.push('/')
+      localStorage.removeItem('user_info')
+    }
+    getUsersGroup()
   }, [status])
 
   useEffect(() => {
@@ -70,7 +100,7 @@ const UserGroup = () => {
               <CRow>
                 <CCol>
                   <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <UserGroupModal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  <UserGroupModal rowID={rowID} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                 </CCol>
               </CRow>
             </CCardHeader>
@@ -100,7 +130,7 @@ const UserGroup = () => {
                           <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                         </CCol>
                         <CCol>
-                          <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                          {item.id !== 1 ? <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton> : null}
                         </CCol>
                       </CRow>
                     </td>

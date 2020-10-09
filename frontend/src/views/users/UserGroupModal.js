@@ -1,4 +1,6 @@
-import React, {useState} from 'react'
+import React, {useEffect,useState} from 'react'
+import { useHistory } from 'react-router-dom'
+import Select from 'react-select';
 import axios from '../../services/api'
 import { useFormik } from 'formik';
 
@@ -12,13 +14,16 @@ import {
   CForm,
   CFormGroup,
   CInput,
-  CFormText
+  CFormText,
+  CSelect
 } from '@coreui/react';
 
 const UserGroupModal = (props) => {
+  console.log(props.role)
   const [mess, setMess] = useState('')
-  function handleAddNewOne() {
-    // console.log("123");
+  const [selectedOption, setSelectedOption] = useState([]);
+  console.log(props)
+  const handleAddNewOne = () => {
     props.handleAddNew();
   }
   const handleDisplay = () => {
@@ -29,59 +34,39 @@ const UserGroupModal = (props) => {
   const validate = values => {
     const errors = {};
     if (!values.name ) {
-      errors.password = 'Required';
+      errors.name = 'Please enter group name';
     }
-    if (!values.gender){
-      errors.gender = 'Required';
-    }
-    if ( !values.birthday){
-      errors.birthday = 'Required';
-    }
-    if (!values.pass) {
-      errors.pass = 'Required';
-    }
-    if (!values.email) {
-      errors.email = 'Required';
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = 'Invalid email address';
-    }
+   if (selectedOption === null) {
+     errors.select = 'Please select group roles.'
+   }
     return errors;
   }
   const formik = useFormik({
     initialValues: {
-      name: "",
-      username: "",
-      gender: '',
-      email: "",
-      pass: "",
-      initcode: "",
-      cpf: "",
-      birthday: "",
-      master: "",
-      fk_professional: "",
-      fk_license: "",
-      deleted: 0
+      name: ''
     },
     validate,
     onSubmit: values => {
-      add_new(values)
+      values.roles = selectedOption
+      console.log(values)
+      handleSubmit(values)
     }
   })
 
-  async function add_new(values) {
+  async function handleSubmit(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
       let response = null
       try {
         if (props.rowID === -1){
-          response = await axios.post('/', values, {
+          response = await axios.post('/usergroup', values, {
             headers: {
               authorization: user_info.accessToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put('/' + props.rowID, values, {
+          response = await axios.put('/usergroup/' + props.rowID, values, {
             headers: {
               authorization: user_info.accessToken
             }
@@ -109,19 +94,23 @@ const UserGroupModal = (props) => {
         size="lg"
         color={'info'}
       >
-        <CModalHeader closeButton>New Professional</CModalHeader>
+        <CModalHeader closeButton>New User Group</CModalHeader>
         <CModalBody>
           <CForm>
             <CFormGroup>
 
               <CRow>
-                <CCol>
+                <CCol className={'col-3'}>
                   <CInput id="name" name="name" placeholder="Name" value={formik.values.name} onChange={formik.handleChange} />
                   <p className="text-warning" >{formik.errors.name?formik.errors.name:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput id="username" name="username" placeholder="User Name" value={formik.values.username} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.username?formik.errors.username:null}</p>
+                  <Select defaultValue={selectedOption}
+                           onChange={setSelectedOption}
+                           options={props.role}
+                          isMulti
+                  />
+                  <p className="text-warning" >{formik.errors.select?formik.errors.select:null}</p>
                 </CCol>
               </CRow>
 

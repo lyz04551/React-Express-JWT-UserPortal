@@ -44,12 +44,14 @@ const Professional = () =>{
     }).catch(err => alert(err.message))
   }
 
-  useEffect(() => {
-      axios.get('/professionals', {
-        headers: {
-          authorization: user_info.accessToken
-        }
-      }).then(res => {
+  useEffect( () => {
+    async function getPermissions() {
+      try {
+        const res = await axios.get('/professionals', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        })
         if (res.data.professionals) {
           const val = res.data.professionals
           setProfessinalData(val)
@@ -57,7 +59,11 @@ const Professional = () =>{
           history.push('/')
           localStorage.removeItem('user_info')
         }
-      }).catch(err => alert(err.message))
+      } catch (err) {
+        alert(err.message)
+      }
+    }
+    getPermissions()
   }, [status])
 
   useEffect(() => {

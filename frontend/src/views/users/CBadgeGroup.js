@@ -5,7 +5,7 @@ const CBadgeGroup = (props) => {
   const list = props.list.split(',')
   return (
     <>
-      {list.length > 0 && list.map(item => <CBadge color={'dark'} shape={'pill'}>{item}</CBadge>)}
+      {list.length > 0 && list.map(item => <CBadge key={item} color={'dark'} shape={'pill'}>{item}</CBadge>)}
     </>
   )
 }
