@@ -1,19 +1,23 @@
-import React, {useState, useEffect} from 'react'
-import { CBadge, CButton, CCard, CCardBody, CCardHeader, CCol, CDataTable, CRow } from '@coreui/react';
-import UserModal from './UserModal';
+import React, {useEffect, useState} from 'react'
+import { CButton, CCard, CCardBody, CCardHeader, CCol, CDataTable, CRow } from '@coreui/react';
+import UserGroupModal from './UserGroupModal';
 import CIcon from '@coreui/icons-react';
-import axios from '../../services/api';
 import { useHistory } from 'react-router-dom';
+import axios from '../../services/api';
+import CBadgeGroup from './CBadgeGroup';
 
-const Users = () => {
+const UserGroup = () => {
+  const fields = ['id', 'name', 'roles', 'action']
   const history = useHistory()
   const [professionalData, setProfessinalData] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
-  const [rowID, setRowID] =useState(null)
-  const [group, setGroup] = useState([])
-  const fields = ['id','name', 'username', 'email', 'pass', 'initcode', 'cpf', 'birthday', 'gender', 'master', 'active', 'fk_professional', 'fk_license', 'deleted', 'creation_timestamp', 'action']
+  const [rowID, setRowID] = useState(null)
+  const [role, setRole] = useState([])
+  // const [name, setName] = useState('<+>')
+  // const [ownRole, setOwnRole] = useState(null)
   const user_info = JSON.parse(localStorage.getItem('user_info'))
+
   const hanldeShowModal = () => {
     setRowID(null)
     setShowModal(!showModal)
@@ -24,7 +28,7 @@ const Users = () => {
   }
 
   const deleteRow = (rowID) => {
-    axios.delete('/' + rowID, {
+    axios.delete('/usergroup/' + rowID, {
       headers: {
         authorization: user_info.accessToken
       }
@@ -35,42 +39,46 @@ const Users = () => {
   }
 
   useEffect(() => {
-      async function getAllUser(){
-       try {
-         const res = await axios.get('/', {
-           headers: {
-             authorization: user_info.accessToken
-           }
-         })
-         if (res.data.users) {
-           setProfessinalData(res.data.users)
-           await getGroups()
-         } else redirect()
-       } catch (err) {
-         alert(err.message)
-       }}
-
-       async function getGroups(){
-        try {
-          const res = await axios.get('/usergroup-list', {
-            headers: {
-              authorization: user_info.accessToken
-            }
-          })
-          if (res.data.group) {
-            setGroup(res.data.group)
-          } else {
-            redirect();
+    async function getUsersGroup() {
+      try {
+        const res = await axios.get('/usergroup', {
+          headers: {
+            authorization: user_info.accessToken
           }
-        } catch (e) {
-          alert(e.message)
+        })
+        console.log(res.data.group)
+        if (res.data.group) {
+          setProfessinalData(res.data.group)
+          await getRoles()
+        } else {
+          redirect()
         }
-       }
-       const redirect = () => {
-          history.push('/login')
-          localStorage.removeItem('user_info')
+      } catch (e) {
+        alert(e.message)
+      }
+    }
+    async function getRoles(){
+      try {
+        const res = await axios.get('/roles', {
+          headers: {
+            authorization: user_info.accessToken
+          }
+        })
+        if (res.data.role){
+          setRole(res.data.role)
+        } else {
+          alert(res.data)
+          redirect()
         }
-    getAllUser()
+      } catch (e) {
+        alert(e.message)
+      }
+    }
+    const redirect = () => {
+      history.push('/')
+      localStorage.removeItem('user_info')
+    }
+    getUsersGroup()
   }, [status])
 
   useEffect(() => {
@@ -79,9 +87,10 @@ const Users = () => {
     }
   }, [rowID])
 
-  function handleAddNew() {
+  const handleAddNew = () =>{
     setStatus(status + 1)
   }
+
   return (
     <>
       <CRow className="justify-content-center">
@@ -91,7 +100,7 @@ const Users = () => {
               <CRow>
                 <CCol>
                   <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <UserModal rowID={rowID} group={group}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  <UserGroupModal rowID={rowID} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                 </CCol>
               </CRow>
             </CCardHeader>
@@ -109,16 +118,10 @@ const Users = () => {
                       {index + 1}
                     </td>
                   ),
-                  'gender':
-                    (item)=>(
-                      <td>
-                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
-                          {item.gender === 0? "Male" : "Female"}
-                        </CBadge>
-                      </td>
-                    ),
-                  'deleted':(item) => (
-                    <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                  'roles':(item) => (
+                    <td>
+                      <CBadgeGroup list={item.roles}/>
+                    </td>
                   ),
                   'action': (item) => (
                     <td width={102}>
@@ -142,5 +145,4 @@ const Users = () => {
     </>
   );
 }
-
-export default Users
+export default UserGroup

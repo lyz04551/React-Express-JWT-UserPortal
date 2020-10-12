@@ -15,17 +15,17 @@ import CIcon from '@coreui/icons-react'
 
 import Modal from './Modal'
 
-const Professional = () =>{
+const License = () =>{
   const history = useHistory()
-  const [professionalData, setProfessinalData] = useState([])
+  const [licenseData, setLicenseData] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
-  const fields = ['id','picture', 'name', 'gender', 'birthday', 'email', 'comment', 'deleted', 'fk_license', 'action']
+  const fields = ['id','name','fk_user','creation_time','expiration_date','fixed_time','all_markers','agenda_interval','agenda_start','agenda_ending','reminder_msg_event','cat_color_active','locked','action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
-    if (!ownRoles.includes('ROLE_TARGET_EDIT')) fields.splice(-1,1)
+    if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
   }
 
 
@@ -39,7 +39,7 @@ const Professional = () =>{
   }
 
   const deleteRow = (rowID) => {
-    axios.delete('/professionals/' + rowID, {
+    axios.delete('/licenses/' + rowID, {
       headers: {
         authorization: user_info.accessToken
       }
@@ -52,14 +52,14 @@ const Professional = () =>{
   useEffect( () => {
     async function getPermissions() {
       try {
-        const res = await axios.get('/professionals', {
+        const res = await axios.get('/licenses', {
           headers: {
             authorization: user_info.accessToken
           }
         })
-        if (res.data.professionals) {
-          const val = res.data.professionals
-          setProfessinalData(val)
+        if (res.data.license) {
+          const val = res.data.license
+          setLicenseData(val)
         } else {
           history.push('/')
           localStorage.removeItem('user_info')
@@ -96,7 +96,7 @@ const Professional = () =>{
             </CCardHeader>
             <CCardBody>
               <CDataTable
-                items={professionalData}
+                items={licenseData}
                 fields={fields}
                 itemsPerPageSelect
                 itemsPerPage={5}
@@ -104,9 +104,9 @@ const Professional = () =>{
                 tableFilter
                 scopedSlots = {{
                   'id' : (item, index) => (
-                      <td>
-                        {index + 1}
-                      </td>
+                    <td>
+                      {index + 1}
+                    </td>
                   ),
                   'picture': (item) => (
                     <td>
@@ -124,21 +124,21 @@ const Professional = () =>{
                       </td>
                     ),
                   'deleted':(item) => (
-                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                    <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
                   ),
                   'action': (item) => (
                     <td width={102}>
-                    <CRow>
-                      <CCol>
-                        <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
-                      </CCol>
-                      <CCol>
-                        <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
-                      </CCol>
-                    </CRow>
+                      <CRow>
+                        <CCol>
+                          <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                        </CCol>
+                        <CCol>
+                          <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
+                        </CCol>
+                      </CRow>
                     </td>
                   )
-                 }}
+                }}
               />
             </CCardBody>
           </CCard>
@@ -148,4 +148,4 @@ const Professional = () =>{
     </>
   );
 }
-export default Professional
+export default License
