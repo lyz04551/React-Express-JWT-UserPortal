@@ -2,6 +2,7 @@ export default [
   {
     _tag: 'CSidebarNavTitle',
     _children: [''],
+    role: ['ROLE_PROF_VIEW','ROLE_TARGET_VIEW','ROLE_CAT_VIEW', 'ROLE_LIC_VIEW']
   },
   {
     _tag: 'CSidebarNavItem',
@@ -27,9 +28,9 @@ export default [
   {
     _tag: 'CSidebarNavItem',
     name: 'Licenses',
-    to: '/categories',
+    to: '/licenses',
     icon: 'cil-task',
-    role: ['ROLE_CAT_VIEW','ROLE_CAT_EDIT']
+    role: ['ROLE_LIC_VIEW','ROLE_LIC_EDIT']
   },
   {
     _tag: 'CSidebarNavTitle',
