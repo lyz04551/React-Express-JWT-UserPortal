@@ -18,9 +18,7 @@ const loading = (
 const TheContent = () => {
   const history = useHistory()
   const user_info = localStorage.getItem('user_info')
-  useEffect(()=> {
     if (!user_info) history.push('/login')
-  },[])
 
     return (
       <main className="c-main">

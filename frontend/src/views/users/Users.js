@@ -11,6 +11,7 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
+  const [rowData, setRowData] = useState([])
   const [group, setGroup] = useState([])
   const fields = ['id','name', 'username','user_group', 'email', 'initcode', 'cpf', 'birthday', 'gender', 'master', 'active', 'fk_professional', 'fk_license', 'deleted', 'creation_timestamp', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
@@ -24,8 +25,9 @@ const Users = () => {
     setShowModal(!showModal)
   }
 
-  const addOrEdit = (id) => {
+  const addOrEdit = (id, item) => {
     setRowID(id)
+    setRowData(item)
   }
 
   const deleteRow = (rowID) => {
@@ -37,6 +39,11 @@ const Users = () => {
       alert(res.data.message)
       handleAddNew()
     }).catch(err => alert(err.message))
+  }
+
+  const dateConvertor = (dt) => {
+    let date = new Date(dt);
+    return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
   }
 
   useEffect(() => {
@@ -96,8 +103,8 @@ const Users = () => {
               <CCardHeader >
                 <CRow>
                   <CCol>
-                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                    <UserModal rowID={rowID} group={group}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                    <CButton onClick={()=>addOrEdit(-1, [])} className="px-5" color="info">+ Add New</CButton>
+                    <UserModal rowID={rowID} group={group} rowData={rowData} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                   </CCol>
                 </CRow>
               </CCardHeader>
@@ -131,6 +138,11 @@ const Users = () => {
                         </CBadge>
                       </td>
                     ),
+                  'birthday':(item)=>(
+                    <td>
+                      {dateConvertor(item.birthday)}
+                    </td>
+                  ),
                   'deleted':(item) => (
                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
                   ),
@@ -138,7 +150,7 @@ const Users = () => {
                     <td width={102}>
                       <CRow>
                         <CCol>
-                          <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                          <CButton onClick={(e)=> addOrEdit(item.id, item)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                         </CCol>
                         <CCol>
                           {item.id !== 1 ? <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton> : null}
