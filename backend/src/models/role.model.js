@@ -16,5 +16,10 @@ Role.getByGroupID = (id, result) => {
         }
     })
 }
-
+Role.getAll = (result) => {
+    dbConn.query("Select id as value, nome as label from role", null, (err, res) => {
+        if (err) result(err, null)
+        else result(null, res)
+    })
+}
 module.exports = Role

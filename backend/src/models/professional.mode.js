@@ -7,7 +7,7 @@ var Professional = () => {
 
 Professional.getAll = (result) => {
     dbConn.query("Select * from professionals", null, (err, res) => {
-        if (err) result(err.message, null)
+        if (err) result(err, null)
         else result(null, res)
     })
 }
@@ -22,10 +22,10 @@ Professional.addNew = (data, result) => {
 
 
     dbConn.query("Select * from professionals where email=" + strVal[3], (err, res) => {
-        if (err) result(err.message, null)
+        if (err) result(err, null)
         if (res.length === 0) {
             dbConn.query(sql,(error, response) => {
-                if (error) result(error.message, null)
+                if (error) result(error, null)
                 else result(null, response)
             })
         } else {
@@ -57,7 +57,7 @@ Professional.delete = (id, result) => {
     const val = JSON.stringify(id)
     const sql = "DELETE FROM professionals WHERE id=" + val
     dbConn.query(sql, (err, res) => {
-        if (err) result(err.message, null)
+        if (err) result(err, null)
         else result(null, res)
     })
 }
