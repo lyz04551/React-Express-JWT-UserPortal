@@ -21,6 +21,7 @@ const Professional = () =>{
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
+  const [rowData, setRowData] = useState([])
   const fields = ['id','picture', 'name', 'gender', 'birthday', 'email', 'comment', 'deleted', 'fk_license', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
@@ -34,8 +35,9 @@ const Professional = () =>{
     setShowModal(!showModal)
   }
 
-  const addOrEdit = (id) => {
+  const addOrEdit = (id, item) => {
     setRowID(id)
+    setRowData(item)
   }
 
   const deleteRow = (rowID) => {
@@ -90,7 +92,7 @@ const Professional = () =>{
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            {fields.includes('action')? (
+            {fields.includes('action')&& (
               <CCardHeader >
                 <CRow>
                   <CCol>
@@ -99,8 +101,7 @@ const Professional = () =>{
                   </CCol>
                 </CRow>
               </CCardHeader>
-            ): null}
-
+            )}
             <CCardBody>
               <CDataTable
                 items={professionalData}
@@ -137,7 +138,7 @@ const Professional = () =>{
                     <td width={102}>
                     <CRow>
                       <CCol>
-                        <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                        <CButton onClick={(e)=> addOrEdit(item.id, item)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                       </CCol>
                       <CCol>
                         <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton>
