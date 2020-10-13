@@ -61,7 +61,7 @@ const Category = () =>{
           const val = res.data.category
           setCategoryData(val)
         } else {
-          history.push('/')
+          history.push('/login')
           localStorage.removeItem('user_info')
         }
       } catch (err) {

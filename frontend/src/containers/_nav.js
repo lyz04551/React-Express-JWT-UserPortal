@@ -1,7 +1,13 @@
 export default [
   {
+    _tag: 'CSidebarNavItem',
+    name: 'Dashboard',
+    to: '/dashboard',
+    icon: 'cil-speedometer',
+  },
+  {
     _tag: 'CSidebarNavTitle',
-    _children: [''],
+    _children: ['main'],
     role: ['ROLE_PROF_VIEW','ROLE_TARGET_VIEW','ROLE_CAT_VIEW', 'ROLE_LIC_VIEW']
   },
   {

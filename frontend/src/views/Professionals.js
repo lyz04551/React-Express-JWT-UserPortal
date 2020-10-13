@@ -61,8 +61,12 @@ const Professional = () =>{
           const val = res.data.professionals
           setProfessinalData(val)
         } else {
-          history.push('/')
-          localStorage.removeItem('user_info')
+          if (res.data.message === 'No Permission'){
+            history.push('/')
+          } else {
+            history.push('/login')
+            localStorage.removeItem('user_info')
+          }
         }
       } catch (err) {
         alert(err.message)

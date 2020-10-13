@@ -12,8 +12,13 @@ const Users = () => {
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
   const [group, setGroup] = useState([])
-  const fields = ['id','name', 'username', 'email', 'pass', 'initcode', 'cpf', 'birthday', 'gender', 'master', 'active', 'fk_professional', 'fk_license', 'deleted', 'creation_timestamp', 'action']
+  const fields = ['id','name', 'username','user_group', 'email', 'initcode', 'cpf', 'birthday', 'gender', 'master', 'active', 'fk_professional', 'fk_license', 'deleted', 'creation_timestamp', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
+  if (user_info) {
+    const ownRoles = user_info.user.roles.map(item=> item.nome)
+    if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
+  }
+
   const hanldeShowModal = () => {
     setRowID(null)
     setShowModal(!showModal)
@@ -107,6 +112,13 @@ const Users = () => {
                   'id' : (item, index) => (
                     <td>
                       {index + 1}
+                    </td>
+                  ),
+                  'user_group': (item) => (
+                    <td>
+                      <CBadge shape={'pill'}>
+                        {item.user_group}
+                      </CBadge>
                     </td>
                   ),
                   'gender':

@@ -61,7 +61,7 @@ const License = () =>{
           const val = res.data.license
           setLicenseData(val)
         } else {
-          history.push('/')
+          history.push('/login')
           localStorage.removeItem('user_info')
         }
       } catch (err) {

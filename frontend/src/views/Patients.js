@@ -61,7 +61,7 @@ const Patient = () =>{
           const val = res.data.patient
           setPatientData(val)
         } else {
-          history.push('/')
+          history.push('/login')
           localStorage.removeItem('user_info')
         }
       } catch (err) {
