@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {useHistory} from 'react-router-dom'
-import { useFormik } from 'formik';
 import axios from '../services/api'
 import {
   CBadge,
@@ -22,19 +21,20 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
+import { useFormik } from 'formik';
 
-const Category = () =>{
+const License = () =>{
   const history = useHistory()
-  const [categoryData, setCategoryData] = useState([])
+  const [licenseData, setLicenseData] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
   const [rowData, setRowData] = useState([])
-  const fields = ['id','name', 'nickname', 'amount_patients', 'amount_suitable_overflow', 'duration_time', 'color', 'deleted', 'fk_license' ,'action']
+  const fields = ['id','name','fk_user','creation_time','expiration_date','fixed_time','all_markers','agenda_interval','agenda_start','agenda_ending','reminder_msg_event','cat_color_active','locked','action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
-    if (!ownRoles.includes('ROLE_CAT_EDIT')) fields.splice(-1,1)
+    if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
   }
 
 
@@ -49,7 +49,7 @@ const Category = () =>{
   }
 
   const deleteRow = (rowID) => {
-    axios.delete('/categories/' + rowID, {
+    axios.delete('/licenses/' + rowID, {
       headers: {
         authorization: user_info.accessToken
       }
@@ -66,18 +66,17 @@ const Category = () =>{
     `);
   }
 
-
   useEffect( () => {
     async function getPermissions() {
       try {
-        const res = await axios.get('/categories', {
+        const res = await axios.get('/licenses', {
           headers: {
             authorization: user_info.accessToken
           }
         })
-        if (res.data.category) {
-          const val = res.data.category
-          setCategoryData(val)
+        if (res.data.license) {
+          const val = res.data.license
+          setLicenseData(val)
         } else {
           history.push('/login')
           localStorage.removeItem('user_info')
@@ -108,15 +107,16 @@ const Category = () =>{
               <CCardHeader >
                 <CRow>
                   <CCol>
-                    <CButton onClick={()=>addOrEdit(-1, [])} className="px-5" color="info">+ Add New</CButton>
-                    <Modal rowID={rowID}  display={showModal} rowData={rowData} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                    <CButton onClick={()=>addOrEdit(-1,[])} className="px-5" color="info">+ Add New</CButton>
+                    <Modal rowID={rowID}  display={showModal} rowData = {rowData} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                   </CCol>
                 </CRow>
               </CCardHeader>
             )}
+
             <CCardBody>
               <CDataTable
-                items={categoryData}
+                items={licenseData}
                 fields={fields}
                 itemsPerPageSelect
                 itemsPerPage={5}
@@ -143,9 +143,14 @@ const Category = () =>{
                         </CBadge>
                       </td>
                     ),
-                  'duration_time':(item)=> (
+                  'creation_time':(item)=>(
                     <td>
-                      {dateConvertor(item.duration_time)}
+                      {dateConvertor(item.creation_time)}
+                    </td>
+                  ),
+                  'expiration_date':(item) => (
+                    <td>
+                      {dateConvertor(item.expiration_date)}
                     </td>
                   ),
                   'deleted':(item) => (
@@ -196,17 +201,22 @@ const Modal = (props) => {
     enableReinitialize: true,
     initialValues: {
       name: rowData.name || '',
-      deleted: rowData.deleted || '',
-      fk_license: rowData.fk_license || '',
-      nickname: rowData.nickname || '',
-      amount_patients: rowData.amount_patients || '',
-      amount_suitable_overflow: rowData.amount_suitable_overflow || '',
-      duration_time: rowData.duration_time || '',
-      color: rowData.color||'',
+      fk_user: rowData.fk_user || '',
+      creation_time: rowData.creation_time || '',
+      expiration_date: rowData.expiration_date || '',
+      fixed_time: rowData.fixed_time || '',
+      all_markers: rowData.all_markers || '',
+      agenda_interval: rowData.agenda_interval || '',
+      agenda_start: rowData.agenda_start || '',
+      agenda_ending: rowData.agenda_ending || '',
+      reminder_msg_event: rowData.reminder_msg_event || '',
+      cat_color_active: rowData.cat_color_active || '',
+      locked: rowData.locked || ''
     },
     validate,
     onSubmit: values => {
-      console.log("adfadf")
+      console.log("adfa")
+
       add_new(values)
     }
   })
@@ -218,14 +228,14 @@ const Modal = (props) => {
       console.log(props.rowID)
       try {
         if (props.rowID === -1){
-          response = await axios.post(`/categories`, values, {
+          response = await axios.post('/licenses', values, {
             headers: {
               authorization: user_info.accessToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put(`/categories/${props.rowID}`, values, {
+          response = await axios.put('/licenses/' + props.rowID, values, {
             headers: {
               authorization: user_info.accessToken
             }
@@ -236,6 +246,7 @@ const Modal = (props) => {
           handleDisplay()
         } else {
           setMess(response.data.message)
+          console.log(mess)
         }
       } catch (e) {
         alert(e.message)
@@ -262,38 +273,44 @@ const Modal = (props) => {
                   <p className="text-warning" >{formik.errors.name?formik.errors.name:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput id="nickname" name="nickname" placeholder="NickName" value={formik.values.nickname} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.nickname?formik.errors.nickname:null}</p>
+                  <CInput id="fk_user" name="fk_user" placeholder="fk user" value={formik.values.fk_user} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.fk_user?formik.errors.fk_user:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput type={'number'} id="amount_patients" name="amount_patients" placeholder="Amount Patients" value={formik.values.amount_patients} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.amount_patients?formik.errors.amount_patients:null}</p>
-                </CCol>
-                <CCol>
-                  <CInput type={'date'} id="duration_time" name="duration_time" placeholder="duration_time" value={formik.values.duration_time} onChange={formik.handleChange}/>
+                  <CInput type={'date'} id="expiration_date" name="expiration_date" placeholder="Expiration Date" value={formik.values.expiration_date} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.expiration_date?formik.errors.expiration_date:null}</p>
                 </CCol>
               </CRow>
               <CRow>
                 <CCol>
-                  <CInput type={'number'} id="amount_suitable_overflow" name="amount_suitable_overflow" placeholder="Amount Suitable Overflow" value={formik.values.amount_suitable_overflow} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.amount_suitable_overflow?formik.errors.amount_suitable_overflow:null}</p>
+                  <CInput type={'number'} id="fixed_time" name="fixed_time" placeholder="Fixed Time" value={formik.values.fixed_time} onChange={formik.handleChange} />
+                  <p className="text-warning" >{formik.errors.fixed_time?formik.errors.fixed_time:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput type={'number'} id="deleted" name="deleted" placeholder="Amount Suitable deleted" value={formik.values.deleted} onChange={formik.handleChange} />
-                  <p className="text-warning" >{formik.errors.deleted?formik.errors.deleted:null}</p>
+                  <CInput type={'number'} id="all_markers" name="all_markers" placeholder="All Markers" value={formik.values.all_markers} onChange={formik.handleChange}/>
                 </CCol>
                 <CCol>
-                  <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
+                  <CInput id="agenda_interval" name="agenda_interval" placeholder="Agenda Interval" value={formik.values.agenda_interval} onChange={formik.handleChange}/>
+                </CCol>
+                <CCol>
+                  <CInput type={'time'} id="agenda_start" name="agenda_start" placeholder={'Agenda Start'} value={formik.values.agenda_start} onChange={formik.handleChange}/>
+                </CCol>
+                <CCol>
+                  <CInput type={'time'} id="agenda_ending" name="agenda_ending" placeholder={'Agenda Ending'} value={formik.values.agenda_ending} onChange={formik.handleChange}/>
                 </CCol>
               </CRow>
               <CRow>
                 <CCol>
-                  <CInput type={'number'} id="color" name="color" placeholder="Color" value={formik.values.color} onChange={formik.handleChange}/>
+                  <CInput id="reminder_msg_event" name="reminder_msg_event" placeholder={'Reminder MSG Event'} value={formik.values.reminder_msg_event} onChange={formik.handleChange}/>
                 </CCol>
-                <CCol></CCol>
-                <CCol></CCol>
+                <CCol>
+                  <CInput type={'number'} id="cat_color_active" name="cat_color_active" placeholder={'CAT Color Active'} value={formik.values.cat_color_active} onChange={formik.handleChange}/>
+                </CCol>
+                <CCol>
+                  <CInput typ={'number'}  id="locked" name="locked" placeholder={'Locked'} value={formik.values.locked} onChange={formik.handleChange}/>
+                </CCol>
               </CRow>
-              <CFormText className="help-block" color={'danger'}>{mess}</CFormText>
+              <CFormText className="help-block" placeholder={'Agenda Start'} color={'danger'}>{mess}</CFormText>
             </CFormGroup>
           </CForm>
         </CModalBody>
@@ -308,5 +325,4 @@ const Modal = (props) => {
     </>
   )
 }
-
-export default Category
+export default License

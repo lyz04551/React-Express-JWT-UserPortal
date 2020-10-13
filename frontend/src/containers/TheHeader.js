@@ -9,6 +9,7 @@ import {
   CHeaderNavLink,
   CSubheader,
   CBreadcrumbRouter,
+  CTooltip
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
@@ -32,7 +33,9 @@ const TheHeader = () => {
     const val = [false, 'responsive'].includes(sidebarShow) ? true : 'responsive'
     dispatch({type: 'set', sidebarShow: val})
   }
-
+  let roles = []
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
+  user_info ? roles = user_info.user.roles.map(item => item.nome) : roles = []
   return (
     <CHeader withSubheader>
       <CToggler
@@ -50,15 +53,44 @@ const TheHeader = () => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
-        <CHeaderNavItem className="px-3" >
-          <CHeaderNavLink to="/professionals">Professionals</CHeaderNavLink>
-        </CHeaderNavItem>
-        <CHeaderNavItem  className="px-3">
-          <CHeaderNavLink to="/patients">Patients</CHeaderNavLink>
-        </CHeaderNavItem>
-        <CHeaderNavItem className="px-3">
-          <CHeaderNavLink to="/categories">Categories</CHeaderNavLink>
-        </CHeaderNavItem>
+        <CTooltip content={'Dashboard'} >
+          <CHeaderNavItem className="px-3" >
+            <CHeaderNavLink to="/dashboard">
+              <CIcon name={'cilSpeedometer'}  />
+            </CHeaderNavLink>
+          </CHeaderNavItem>
+        </CTooltip>
+        {roles.includes('ROLE_PROF_VIEW')? (
+            <CTooltip content={'Professionals'} >
+            <CHeaderNavItem className="px-3" >
+              <CHeaderNavLink to="/professionals">
+                <CIcon name={'cilPeople'}  />
+              </CHeaderNavLink>
+            </CHeaderNavItem>
+            </CTooltip>
+          ) : null}
+        {roles.includes('ROLE_TARGET_VIEW')? (
+          <CTooltip content={'Patients'}  style={roles.includes('ROLE_TARGET_VIEW')? 'display=block' : 'display=none'}>
+            <CHeaderNavItem  className="px-3">
+              <CHeaderNavLink to="/patients"><CIcon name={'cilPeople'} /></CHeaderNavLink>
+            </CHeaderNavItem>
+          </CTooltip>
+        ): null}
+        {roles.includes('ROLE_CAT_VIEW') ? (
+          <CTooltip content={'Categories'}  style={roles.includes('ROLE_CAT_VIEW')? 'display=block' : 'display=none'}>
+            <CHeaderNavItem className="px-3">
+              <CHeaderNavLink to="/categories"><CIcon name={'cilTags'} /></CHeaderNavLink>
+            </CHeaderNavItem>
+          </CTooltip>
+        ): null}
+        {roles.includes('ROLE_LIC_VIEW') ? (
+          <CTooltip content={'Licenses'}  style={roles.includes('ROLE_LIC_VIEW')? 'display=block' : 'display=none'}>
+            <CHeaderNavItem className="px-3">
+              <CHeaderNavLink to="/licenses"><CIcon name={'cilTask'} /></CHeaderNavLink>
+            </CHeaderNavItem>
+          </CTooltip>
+        ): null}
+
       </CHeaderNav>
 
       <CHeaderNav className="px-3">
