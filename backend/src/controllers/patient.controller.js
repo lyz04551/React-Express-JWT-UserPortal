@@ -1,21 +1,21 @@
 'use strict';
-const Professional = require('../models/professional.mode');
+const Patient = require('../models/patient.model')
 
-exports.getAll = function (req, res) {
+exports.getAll = (req, res) => {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.getAll(function(err, professionals) {
-            if (err) res.json({
-                message: err.message
-            })
-            res.send({professionals})
-        });
+    if (ownRole.includes('ROLE_TARGET_VIEW')){
+        Patient.getAll((err, patient) => {
+            if (err) res.send({error: true, message: patient.message})
+            else res.json({patient})
+        })
     } else res.send({error: true, message: 'No Permission'})
+
 }
 exports.addNew = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.addNew(req.body, (err, result) => {
+    if (ownRole.includes('ROLE_TARGET_EDIT')){
+        const patient = new Patient(req.body)
+        Patient.addNew(req.body.email, patient, (err, result) => {
             console.log(err)
             if (err) res.json({message: err.message})
             if (result.length > 0) res.json({message: "User is already exist. Please enter another email."})
@@ -25,8 +25,9 @@ exports.addNew = function (req, res) {
 }
 exports.update = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.update(req.params.id, req.body, (err, result) => {
+    if (ownRole.includes('ROLE_TARGET_EDIT')){
+        const patient = new Patient(req.body)
+        Patient.update(req.params.id,patient, (err, result) => {
             if (err) res.json({message: err.message})
             else res.json({message: "Success"})
         })
@@ -34,8 +35,8 @@ exports.update = function (req, res) {
 }
 exports.delete = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.delete(req.params.id, (err, result) => {
+    if (ownRole.includes('ROLE_TARGET_EDIT')){
+        Patient.delete(req.params.id, (err, result) => {
             if (err) res.json({message: err.message})
             else res.json({message: 'Success'})
         })

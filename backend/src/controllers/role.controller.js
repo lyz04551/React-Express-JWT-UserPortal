@@ -10,8 +10,8 @@ exports.getByGroupID = (req, res) => {
     })
 }
 exports.getAll = (req, res) => {
-    Role.getAll((err, roles) => {
+    Role.getAll((err, role) => {
         if (err) res.json({message: err.message})
-        else res.json({roles})
+        else res.json({role})
     })
 }

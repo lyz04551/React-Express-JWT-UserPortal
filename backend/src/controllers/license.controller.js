@@ -1,32 +1,31 @@
 'use strict';
-const Professional = require('../models/professional.mode');
+const License = require('../models/license.model')
 
-exports.getAll = function (req, res) {
+exports.getAll = (req, res) => {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.getAll(function(err, professionals) {
-            if (err) res.json({
-                message: err.message
-            })
-            res.send({professionals})
-        });
+    if (ownRole.includes('ROLE_LIC_VIEW')){
+        License.getAll((err, license) => {
+            if (err) res.send({error: true, message: err.message})
+            else res.json({license})
+        })
     } else res.send({error: true, message: 'No Permission'})
 }
 exports.addNew = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.addNew(req.body, (err, result) => {
-            console.log(err)
+    if (ownRole.includes('ROLE_LIC_EDIT')){
+        const license = new License(req.body)
+        License.addNew(req.body.email, license, (err, result) => {
             if (err) res.json({message: err.message})
-            if (result.length > 0) res.json({message: "User is already exist. Please enter another email."})
+            if (result.length > 0) res.json({message: "Category is already exist. Please enter another email."})
             else res.json({message: "Success"})
         })
-    } else res.send({error: true, message: 'No Permission'})
+    } else  res.send({error: true, message: 'No Permission'})
 }
 exports.update = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.update(req.params.id, req.body, (err, result) => {
+    if (ownRole.includes('ROLE_LIC_EDIT')){
+        const license = new License(req.body)
+        License.update(req.params.id,license, (err, result) => {
             if (err) res.json({message: err.message})
             else res.json({message: "Success"})
         })
@@ -34,8 +33,8 @@ exports.update = function (req, res) {
 }
 exports.delete = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
-    if (ownRole.includes('ROLE_PROF_VIEW')){
-        Professional.delete(req.params.id, (err, result) => {
+    if (ownRole.includes('ROLE_LIC_EDIT')){
+        License.delete(req.params.id, (err, result) => {
             if (err) res.json({message: err.message})
             else res.json({message: 'Success'})
         })
