@@ -67,6 +67,7 @@ const UserModal = (props) => {
     },
     validate,
     onSubmit: values => {
+      values.usergroup = selectedOption
       add_new(values)
     }
   })
