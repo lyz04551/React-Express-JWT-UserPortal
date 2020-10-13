@@ -18,8 +18,10 @@ exports.addNew = function (req, res) {
         Patient.addNew(req.body.email, patient, (err, result) => {
             console.log(err)
             if (err) res.json({message: err.message})
-            if (result.length > 0) res.json({message: "User is already exist. Please enter another email."})
-            else res.json({message: "Success"})
+            else {
+                if (result.length > 0) res.json({message: "User is already exist. Please enter another email."})
+                else res.json({message: "Success"})
+            }
         })
     } else res.send({error: true, message: 'No Permission'})
 }

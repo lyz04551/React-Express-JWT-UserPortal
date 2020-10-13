@@ -30,10 +30,10 @@ exports.addNew = function (req, res){
             const new_user = new Auth(req.body)
             Auth.addNew(new_user, req.body.usergroup.value, (err, user) => {
                 if (err) res.send(err)
-                if (user.length){
+                else {
                     if (user.length > 0) res.json({message: "User is already exist. Please enter another Email or User Name."})
+                    else res.json({message: "Success"})
                 }
-                else res.json({message: "Success"})
             })
         }
     } else res.send({error: true, message:'No permission'})

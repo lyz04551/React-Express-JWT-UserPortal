@@ -1,7 +1,7 @@
 'use strict';
 var dbConn = require('../../config/db.config')
 
-var Professional = () => {
+var Professional = function(){
 
 }
 
@@ -42,6 +42,7 @@ Professional.update = (id, data, result) => {
     values.forEach(val => {
         strVal.push(JSON.stringify(val))
     })
+
     const sql = 'UPDATE professionals SET name='+strVal[0]+', gender='+strVal[1]+', birthday='+strVal[2]+', email='+strVal[3]+
         ', comment='+strVal[4]+', picture='+strVal[5]+', deleted='+strVal[6]+', fk_license='+strVal[7]+ 'WHERE id='+strVal[8]
     console.log(sql)

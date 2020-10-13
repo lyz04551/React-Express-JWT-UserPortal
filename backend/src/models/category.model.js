@@ -1,6 +1,6 @@
 'use strict';
 const dbConn = require('../../config/db.config')
-const Category = (value) => {
+var Category = function(value){
     this.name = value.name
     this.nickname = value.nickname
     this.amount_patients = value.amount_patients
@@ -18,8 +18,8 @@ Category.getAll = (result) => {
         else result(null, res)
     })
 }
-Category.addNew = (email, data, result) => {
-    dbConn.query("Select * from categories set ? where email=" + JSON.stringify(email), null, (err, res) => {
+Category.addNew = (name, data, result) => {
+    dbConn.query("Select * from categories where name=" + JSON.stringify(name), null, (err, res) => {
         if (err) result(err, null)
         if (res.length === 0) {
             dbConn.query('INSERT into categories set ?', data,(error, response) => {

@@ -14,10 +14,12 @@ exports.addNew = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
     if (ownRole.includes('ROLE_LIC_EDIT')){
         const license = new License(req.body)
-        License.addNew(req.body.email, license, (err, result) => {
+        License.addNew(req.body.name, license, (err, result) => {
             if (err) res.json({message: err.message})
-            if (result.length > 0) res.json({message: "Category is already exist. Please enter another email."})
-            else res.json({message: "Success"})
+            else{
+                if (result.length > 0) res.json({message: "Category is already exist. Please enter another email."})
+                else res.json({message: "Success"})
+            }
         })
     } else  res.send({error: true, message: 'No Permission'})
 }
