@@ -25,16 +25,18 @@ const TheSidebar = () => {
 
   const navigation = navList.filter(item => {
     const res = item.role
-    console.log(userInfo)
-    if (res && userInfo){
-      const userRoles = userInfo.user.roles.map((item) => {return item.nome})
-      for (let i = 0; i < res.length; i++){
-        if (userRoles.includes(res[i])) {
-          return  true
+    if (userInfo) {
+      if (res){
+        const userRoles = userInfo.user.roles.map((item) => {return item.nome})
+        for (let i = 0; i < res.length; i++){
+          if (userRoles.includes(res[i])) {
+            return  true
+          }
         }
-      }
-      return false
+        return false
+      } else return true
     } else return false
+
   })
 
 
