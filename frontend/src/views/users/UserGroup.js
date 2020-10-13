@@ -13,6 +13,7 @@ const UserGroup = () => {
   const [showModal, setShowModal] = useState(false)
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] = useState(null)
+  const [rowData, setRowData] = useState([])
   const [role, setRole] = useState([])
   // const [name, setName] = useState('<+>')
   // const [ownRole, setOwnRole] = useState(null)
@@ -27,8 +28,9 @@ const UserGroup = () => {
     setShowModal(!showModal)
   }
 
-  const addOrEdit = (id) => {
+  const addOrEdit = (id, item) => {
     setRowID(id)
+    setRowData(item)
   }
 
   const deleteRow = (rowID) => {
@@ -50,7 +52,6 @@ const UserGroup = () => {
             authorization: user_info.accessToken
           }
         })
-        console.log(res.data.group)
         if (res.data.group) {
           setProfessinalData(res.data.group)
           await getRoles()
@@ -104,8 +105,8 @@ const UserGroup = () => {
               <CCardHeader >
                 <CRow>
                   <CCol>
-                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                    <UserGroupModal rowID={rowID} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                    <CButton onClick={()=>addOrEdit(-1, [])} className="px-5" color="info">+ Add New</CButton>
+                    <UserGroupModal rowID={rowID} rowData={rowData} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
                   </CCol>
                 </CRow>
               </CCardHeader>
@@ -133,7 +134,7 @@ const UserGroup = () => {
                     <td width={102}>
                       <CRow>
                         <CCol>
-                          <CButton onClick={(e)=> addOrEdit(item.id)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
+                          <CButton onClick={(e)=> addOrEdit(item.id, item)} className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_edit'} name={'cilPencil'} /></CButton>
                         </CCol>
                         <CCol>
                           {item.id !== 1 ? <CButton onClick={(e) => deleteRow(item.id)}  className={'btn-pill'} size={'sm'} ><CIcon className={'cust_action_delete'} name={'cilTrash'}/></CButton> : null}

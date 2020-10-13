@@ -1,5 +1,4 @@
 import React, {useEffect,useState} from 'react'
-import { useHistory } from 'react-router-dom'
 import Select from 'react-select';
 import axios from '../../services/api'
 import { useFormik } from 'formik';
@@ -18,10 +17,9 @@ import {
 } from '@coreui/react';
 
 const UserGroupModal = (props) => {
-  console.log(props.role)
   const [mess, setMess] = useState('')
   const [selectedOption, setSelectedOption] = useState([]);
-  console.log(props)
+
   const handleAddNewOne = () => {
     props.handleAddNew();
   }
@@ -35,14 +33,15 @@ const UserGroupModal = (props) => {
     if (!values.name ) {
       errors.name = 'Please enter group name';
     }
-   if (selectedOption === null) {
+   if (!values.selectedOption) {
      errors.select = 'Please select group roles.'
    }
     return errors;
   }
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: ''
+      name: props.rowData.name || '',
     },
     validate,
     onSubmit: values => {
@@ -76,7 +75,6 @@ const UserGroupModal = (props) => {
           handleDisplay()
         } else {
           setMess(response.data.message)
-          console.log(mess)
         }
       } catch (e) {
         alert(e.message)

@@ -21,6 +21,7 @@ const UserModal = (props) => {
 
   const [mess, setMess] = useState('')
   const [selectedOption, setSelectedOption] = useState([])
+  const rowData = props.rowData
   function handleAddNewOne() {
     props.handleAddNew();
   }
@@ -51,19 +52,20 @@ const UserModal = (props) => {
     return errors;
   }
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      username: "",
-      gender: '',
-      email: "",
-      pass: "",
-      initcode: "",
-      cpf: "",
-      birthday: "",
-      master: "",
-      fk_professional: "",
-      fk_license: "",
-      deleted: 0
+      name: rowData.name || '',
+      username: rowData.username || '',
+      gender: rowData.gender || '',
+      email: rowData.email || '',
+      pass: rowData.pass || '',
+      initcode: rowData.initcode || '',
+      cpf: rowData.cpf || '',
+      birthday: rowData.birthday || '',
+      master: rowData.master || '',
+      fk_professional: rowData.fk_professional || '',
+      fk_license: rowData.fk_license || '',
+      deleted: rowData.deleted || ''
     },
     validate,
     onSubmit: values => {
@@ -150,20 +152,20 @@ const UserModal = (props) => {
                   <p className="text-warning" >{formik.errors.cpf?formik.errors.cpf:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput id="birthday" name="birthday" placeholder="Birthday" value={formik.values.birthday} onChange={formik.handleChange} />
+                  <CInput type={'date'} id="birthday" name="birthday" placeholder="Birthday" value={formik.values.birthday} onChange={formik.handleChange} />
                   <p className="text-warning" >{formik.errors.birthday?formik.errors.birthday:null}</p>
                 </CCol>
                 <CCol>
                   <CInput id="gender" name="gender" placeholder="Gender(0 or 1)" value={formik.values.gender} onChange={formik.handleChange}/>
                   <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                 </CCol>
+              </CRow>
+
+              <CRow>
                 <CCol>
                   <CInput id="master" name="master" placeholder="Master 0 or 1" value={formik.values.master} onChange={formik.handleChange}/>
                   <p className="text-warning" >{formik.errors.master?formik.errors.master:null}</p>
                 </CCol>
-              </CRow>
-
-              <CRow>
                 <CCol>
                   <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
                 </CCol>
