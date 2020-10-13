@@ -92,14 +92,16 @@ const Users = () => {
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            <CCardHeader >
-              <CRow>
-                <CCol>
-                  <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <UserModal rowID={rowID} group={group}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
-                </CCol>
-              </CRow>
-            </CCardHeader>
+            {fields.includes('action')?(
+              <CCardHeader >
+                <CRow>
+                  <CCol>
+                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
+                    <UserModal rowID={rowID} group={group}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  </CCol>
+                </CRow>
+              </CCardHeader>
+            ): null}
             <CCardBody>
               <CDataTable
                 items={professionalData}

@@ -17,6 +17,10 @@ const UserGroup = () => {
   // const [name, setName] = useState('<+>')
   // const [ownRole, setOwnRole] = useState(null)
   const user_info = JSON.parse(localStorage.getItem('user_info'))
+  if (user_info) {
+    const ownRoles = user_info.user.roles.map(item=> item.nome)
+    if (!ownRoles.includes('ROLE_ROOM_EDIT')) fields.splice(-1,1)
+  }
 
   const hanldeShowModal = () => {
     setRowID(null)
@@ -96,14 +100,16 @@ const UserGroup = () => {
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            <CCardHeader >
-              <CRow>
-                <CCol>
-                  <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <UserGroupModal rowID={rowID} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
-                </CCol>
-              </CRow>
-            </CCardHeader>
+            {fields.includes('action')?(
+              <CCardHeader >
+                <CRow>
+                  <CCol>
+                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
+                    <UserGroupModal rowID={rowID} role={role} display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  </CCol>
+                </CRow>
+              </CCardHeader>
+            ): null}
             <CCardBody>
               <CDataTable
                 items={professionalData}
