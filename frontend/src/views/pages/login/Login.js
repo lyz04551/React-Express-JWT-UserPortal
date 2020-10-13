@@ -53,7 +53,7 @@ const Login = () => {
       if (response.data.user){
         localStorage.setItem('user_info', JSON.stringify(response.data))
         console.log(JSON.parse(localStorage.getItem('user_info')))
-        history.push('/professionals')
+        history.push('/')
       } else {
         setMessage(response.data.message)
       }
@@ -64,9 +64,9 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem('user_info')){
-      history.push('/professionals')
+      history.push('/')
     }
-  })
+  },[])
 
   return (
     <div className="c-app c-default-layout flex-row align-items-center">

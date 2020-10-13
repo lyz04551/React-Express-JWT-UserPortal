@@ -61,7 +61,7 @@ const License = () =>{
           const val = res.data.license
           setLicenseData(val)
         } else {
-          history.push('/')
+          history.push('/login')
           localStorage.removeItem('user_info')
         }
       } catch (err) {
@@ -86,14 +86,17 @@ const License = () =>{
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            <CCardHeader >
-              <CRow>
-                <CCol>
-                  <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <Modal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
-                </CCol>
-              </CRow>
-            </CCardHeader>
+            {fields.includes('action')? (
+              <CCardHeader >
+                <CRow>
+                  <CCol>
+                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
+                    <Modal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  </CCol>
+                </CRow>
+              </CCardHeader>
+            ): null}
+
             <CCardBody>
               <CDataTable
                 items={licenseData}

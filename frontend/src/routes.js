@@ -1,5 +1,6 @@
 import React from 'react';
 
+const Dashboard = React.lazy(() => import('./views/Dashboard'));
 const Professionals = React.lazy(() => import('./views/Professionals'));
 const Patients = React.lazy(() => import('./views/Patients'));
 const Categories = React.lazy(() => import('./views/Categories'));
@@ -8,6 +9,7 @@ const Users = React.lazy(() => import('./views/users/Users'));
 const UserGroup = React.lazy(() => import('./views/users/UserGroup'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
+  { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/professionals', name: 'Professionals', role:['ROLE_PROF_VIEW','ROLE_PROF_EDIT','ROLE_PROF_VIEW_DATA'] ,component: Professionals},
   { path: '/patients', name: 'Patients', role:['ROLE_TARGET_VIEW','ROLE_TARGET_EDIT','ROLE_TARGET_VIEW_DATA'], component: Patients},
   { path: '/categories', name: 'Categories', role:['ROLE_CAT_VIEW','ROLE_CAT_EDIT'], component: Categories},

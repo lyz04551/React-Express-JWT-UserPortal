@@ -25,7 +25,7 @@ const Professional = () =>{
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
-    if (!ownRoles.includes('ROLE_TARGET_EDIT')) fields.splice(-1,1)
+    if (!ownRoles.includes('ROLE_PROF_EDIT')) fields.splice(-1,1)
   }
 
 
@@ -61,8 +61,12 @@ const Professional = () =>{
           const val = res.data.professionals
           setProfessinalData(val)
         } else {
-          history.push('/')
-          localStorage.removeItem('user_info')
+          if (res.data.message === 'No Permission'){
+            history.push('/')
+          } else {
+            history.push('/login')
+            localStorage.removeItem('user_info')
+          }
         }
       } catch (err) {
         alert(err.message)
@@ -86,14 +90,17 @@ const Professional = () =>{
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            <CCardHeader >
-              <CRow>
-                <CCol>
-                  <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
-                  <Modal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
-                </CCol>
-              </CRow>
-            </CCardHeader>
+            {fields.includes('action')? (
+              <CCardHeader >
+                <CRow>
+                  <CCol>
+                    <CButton onClick={()=>addOrEdit(-1)} className="px-5" color="info">+ Add New</CButton>
+                    <Modal rowID={rowID}  display={showModal} handleDisplay={hanldeShowModal}  handleAddNew={handleAddNew} />
+                  </CCol>
+                </CRow>
+              </CCardHeader>
+            ): null}
+
             <CCardBody>
               <CDataTable
                 items={professionalData}

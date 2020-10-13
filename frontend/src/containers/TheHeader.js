@@ -33,9 +33,9 @@ const TheHeader = () => {
     const val = [false, 'responsive'].includes(sidebarShow) ? true : 'responsive'
     dispatch({type: 'set', sidebarShow: val})
   }
-
+  let roles = []
   const user_info = JSON.parse(localStorage.getItem('user_info'))
-  const roles = user_info.user.roles.map(item => item.nome)
+  user_info ? roles = user_info.user.roles.map(item => item.nome) : roles = []
   return (
     <CHeader withSubheader>
       <CToggler
@@ -53,6 +53,13 @@ const TheHeader = () => {
       </CHeaderBrand>
 
       <CHeaderNav className="d-md-down-none mr-auto">
+        <CTooltip content={'Dashboard'} >
+          <CHeaderNavItem className="px-3" >
+            <CHeaderNavLink to="/dashboard">
+              <CIcon name={'cilSpeedometer'}  />
+            </CHeaderNavLink>
+          </CHeaderNavItem>
+        </CTooltip>
         {roles.includes('ROLE_PROF_VIEW')? (
             <CTooltip content={'Professionals'} >
             <CHeaderNavItem className="px-3" >
