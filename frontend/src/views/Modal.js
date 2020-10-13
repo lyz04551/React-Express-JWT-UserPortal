@@ -19,7 +19,6 @@ import {
 const Modal = (props) => {
   const [mess, setMess] = useState('')
   function handleAddNewOne() {
-    // console.log("123");
     props.handleAddNew();
   }
   const handleDisplay = () => {

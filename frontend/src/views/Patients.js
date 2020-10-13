@@ -86,7 +86,7 @@ const Patient = () =>{
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            {fields.includes('action')? (
+            {fields.includes('action')&&(
               <CCardHeader >
                 <CRow>
                   <CCol>
@@ -95,7 +95,7 @@ const Patient = () =>{
                   </CCol>
                 </CRow>
               </CCardHeader>
-            ): null}
+            )}
             <CCardBody>
               <CDataTable
                 items={PatientData}

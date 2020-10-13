@@ -86,7 +86,7 @@ const Category = () =>{
       <CRow className="justify-content-center">
         <CCol md="12">
           <CCard>
-            {fields.includes('action')?(
+            {fields.includes('action')&&(
               <CCardHeader >
                 <CRow>
                   <CCol>
@@ -95,7 +95,7 @@ const Category = () =>{
                   </CCol>
                 </CRow>
               </CCardHeader>
-            ): null}
+            )}
             <CCardBody>
               <CDataTable
                 items={categoryData}
