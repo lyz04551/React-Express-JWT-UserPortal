@@ -20,6 +20,7 @@ exports.getAll = (req, result) => {
         })
     } else result.send({error: true, message: 'No Permission'})
 }
+
 exports.addNew = (req, result) => {
     const ownRole = req.user.role.map(item => item.nome)
     if (ownRole.includes('ROLE_ROOM_VIEW')){
@@ -31,15 +32,19 @@ exports.addNew = (req, result) => {
         })
     } else result.send({error: true, message: 'No Permission'})
 }
+
 exports.delete = (req, result) => {
     const ownRole = req.user.role.map(item => item.nome)
     if (ownRole.includes('ROLE_ROOM_VIEW')){
         UserGroup.delete(req.params.id, (err, res) => {
             if (err) result.send({error: true, message: err})
-            else result.json({message: 'Success'})
+            else {
+                res.length > 0 ? result.send({error: true, message: 'Group is used by any user yet.'}) : result.json({message: 'Success'})
+            }
         })
     } else result.send({error: true, message: 'No Permission'})
 }
+
 exports.update = (req, result) => {
     const ownRole = req.user.role.map(item => item.nome)
     if (ownRole.includes('ROLE_ROOM_VIEW')){

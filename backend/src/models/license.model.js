@@ -1,6 +1,6 @@
 'use strict';
 const dbConn = require('../../config/db.config')
-const License = (value) => {
+var License = function(value){
     this.name = value.name
     this.fk_user = value.fk_user
     this.creation_time = value.creation_time
@@ -22,8 +22,8 @@ License.getAll = (result) => {
         else result(null, res)
     })
 }
-License.addNew = (email, data, result) => {
-    dbConn.query("Select * from licenses set ? where email=" + JSON.stringify(email), null, (err, res) => {
+License.addNew = (name, data, result) => {
+    dbConn.query("Select * from licenses set ? where email=" + JSON.stringify(name), null, (err, res) => {
         if (err) result(err, null)
         if (res.length === 0) {
             dbConn.query('INSERT into licenses set ?', data,(error, response) => {

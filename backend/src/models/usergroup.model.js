@@ -11,11 +11,11 @@ UserGroup.getList = (result) => {
 
 UserGroup.getAll = (result) => {
     dbConn.query(
-        "SELECT usergroup.id, usergroup.`nome` AS name, GROUP_CONCAT(role.nome) AS roles\n" +
-            "FROM usergroup, usergroup_role, ROLE \n" +
-            "WHERE usergroup.id=usergroup_role.`usergroup_id`\n" +
-            "AND usergroup_role.`role_id`=role.`id` \n" +
-            "GROUP BY usergroup.`id`",
+        `SELECT usergroup.id, usergroup.nome AS name, GROUP_CONCAT(role.nome) AS roles
+            FROM usergroup, usergroup_role, ROLE 
+            WHERE usergroup.id=usergroup_role.usergroup_id
+            AND usergroup_role.role_id=role.id
+            GROUP BY usergroup.id`,
         null, (err, res) => {
             if (err) result(err, null)
             else result(null, res)
@@ -23,34 +23,34 @@ UserGroup.getAll = (result) => {
 }
 
 UserGroup.addNew = (req, result) => {
-    dbConn.query("Insert into usergroup set nome='" + req.name + "'", (error, response) => {
-        if (error) result(error, null)
-        else {
-            const usergroup_id = response.insertId
-            const roles = req.roles
-            const val = roles.map((item => {
-                return '(' + usergroup_id + ',' + item.value + ')'
-            }))
-            dbConn.query("Insert into usergroup_role (usergroup_id, role_id) values" + val, null,function (err, res) {
-                if(err) result(err, null)
-                else result(null, res)
-            } )
-        }
-    })
+          dbConn.query(`Insert into usergroup set nome='${req.name}'`, (error, response) => {
+              if (error) result(error, null)
+              else {
+                  const usergroup_id = response.insertId
+                  const roles = req.roles
+                  const val = roles.map((item => {
+                      return '(' + usergroup_id + ',' + item.value + ')'
+                  }))
+                  dbConn.query("Insert into usergroup_role (usergroup_id, role_id) values" + val, null,function (err, res) {
+                      if(err) result(err, null)
+                      else result(null, res)
+                  } )
+              }
+          })
 }
 
 UserGroup.update = (id, req, result) => {
-    dbConn.query("Update usergroup set nome='" + req.name + "'" +'where id='+id, (error, response) => {
+    dbConn.query(`Update usergroup set nome='${req.name}' where id=${id}`, null,(error, response) => {
         if (error) result(error, null)
         else {
             const roles = req.roles
             const val = roles.map((item => {
                 return '('+  + id + ',' + item.value + ')'
             }))
-            dbConn.query("Delete from usergroup_role where usergroup_id ="+id, null, (errDel, resDel) => {
+            dbConn.query(`Delete from usergroup_role where usergroup_id =${id}`, null, (errDel, resDel) => {
                 if (errDel) result(errDel, null)
                 else {
-                    dbConn.query("Insert into usergroup_role (usergroup_id, role_id) values" + val, null,function (err, res) {
+                    dbConn.query(`Insert into usergroup_role (usergroup_id, role_id) values ${val}`, null,function (err, res) {
                         if(err) result(err, null)
                         else result(null, res)
                     } )
@@ -62,15 +62,24 @@ UserGroup.update = (id, req, result) => {
 }
 
 UserGroup.delete = (req, result) => {
-    dbConn.query("Delete from usergroup_role where usergroup_id =" + req, null, function (error, response) {
-        if (error) result(error, null)
+    dbConn.query(`Select * from users_usergroup where usergroup_id=${req}`, null, (er, re) => {
+        if (er) result(er, null)
         else {
-            dbConn.query("Delete from usergroup where id=" + req, null, function (err, res) {
-                if (err) result(err, null)
-                else result(null, res)
-            })
+            if (re.length > 0) result(null, re)
+            else {
+                dbConn.query(`Delete from usergroup_role where usergroup_id =${req}`, null, function (error, response) {
+                    if (error) result(error, null)
+                    else {
+                        dbConn.query(`Delete from usergroup where id=${req}`, null, function (err, res) {
+                            if (err) result(err, null)
+                            else result(null, res)
+                        })
+                    }
+                })
+            }
         }
     })
+
 }
 
 module.exports = UserGroup

@@ -1,6 +1,6 @@
 'use strict';
 const dbConn = require('../../config/db.config')
-const Patient = (value) => {
+var Patient = function(value){
     this.name = value.name
     this.CPF  = value.CPF
     this.gender = value.gender
