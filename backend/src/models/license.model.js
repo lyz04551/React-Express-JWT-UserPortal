@@ -3,7 +3,6 @@ const dbConn = require('../../config/db.config')
 var License = function(value){
     this.name = value.name
     this.fk_user = value.fk_user
-    this.creation_time = value.creation_time
     this.expiration_date = value.expiration_date
     this.fixed_time = value.fixed_time
     this.all_markers = value.all_markers
@@ -23,16 +22,19 @@ License.getAll = (result) => {
     })
 }
 License.addNew = (name, data, result) => {
-    dbConn.query("Select * from licenses set ? where email=" + JSON.stringify(name), null, (err, res) => {
+    dbConn.query("Select * from licenses where name=" + JSON.stringify(name), null, (err, res) => {
         if (err) result(err, null)
-        if (res.length === 0) {
-            dbConn.query('INSERT into licenses set ?', data,(error, response) => {
-                if (error) result(error, null)
-                else result(null, response)
-            })
-        } else {
-            result(null, res)
+        else{
+            if (res.length === 0) {
+                dbConn.query('INSERT into licenses set ?', data,(error, response) => {
+                    if (error) result(error, null)
+                    else result(null, response)
+                })
+            } else {
+                result(null, res)
+            }
         }
+
     })
 }
 License.update = (id, data, result) => {

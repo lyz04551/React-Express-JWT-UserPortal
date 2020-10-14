@@ -9,6 +9,7 @@ var Auth = function (user) {
     this.initcode = user.initcode
     this.cpf = user.cpf
     this.birthday = user.birthday
+    this.active = 0
     this.gender = user.gender
     this.master = user.master
     this.active = user.active
