@@ -60,7 +60,7 @@ const TheHeader = () => {
             </CHeaderNavLink>
           </CHeaderNavItem>
         </CTooltip>
-        {roles.includes('ROLE_PROF_VIEW')? (
+        {roles.includes('ROLE_PROF_VIEW') && (
             <CTooltip content={'Professionals'} >
             <CHeaderNavItem className="px-3" >
               <CHeaderNavLink to="/professionals">
@@ -68,28 +68,28 @@ const TheHeader = () => {
               </CHeaderNavLink>
             </CHeaderNavItem>
             </CTooltip>
-          ) : null}
-        {roles.includes('ROLE_TARGET_VIEW')? (
+          )}
+        {roles.includes('ROLE_TARGET_VIEW') && (
           <CTooltip content={'Patients'}  style={roles.includes('ROLE_TARGET_VIEW')? 'display=block' : 'display=none'}>
             <CHeaderNavItem  className="px-3">
               <CHeaderNavLink to="/patients"><CIcon name={'cilPeople'} /></CHeaderNavLink>
             </CHeaderNavItem>
           </CTooltip>
-        ): null}
-        {roles.includes('ROLE_CAT_VIEW') ? (
+        )}
+        {roles.includes('ROLE_CAT_VIEW') && (
           <CTooltip content={'Categories'}  style={roles.includes('ROLE_CAT_VIEW')? 'display=block' : 'display=none'}>
             <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/categories"><CIcon name={'cilTags'} /></CHeaderNavLink>
             </CHeaderNavItem>
           </CTooltip>
-        ): null}
-        {roles.includes('ROLE_LIC_VIEW') ? (
+        )}
+        {roles.includes('ROLE_LIC_VIEW') && (
           <CTooltip content={'Licenses'}  style={roles.includes('ROLE_LIC_VIEW')? 'display=block' : 'display=none'}>
             <CHeaderNavItem className="px-3">
               <CHeaderNavLink to="/licenses"><CIcon name={'cilTask'} /></CHeaderNavLink>
             </CHeaderNavItem>
           </CTooltip>
-        ): null}
+        )}
 
       </CHeaderNav>
 
