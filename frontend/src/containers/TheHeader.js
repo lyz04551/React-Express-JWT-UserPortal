@@ -64,7 +64,7 @@ const TheHeader = () => {
             <CTooltip content={'Professionals'} >
             <CHeaderNavItem className="px-3" >
               <CHeaderNavLink to="/professionals">
-                <CIcon name={'cilPeople'}  />
+                <CIcon name={'cilBadge'}  />
               </CHeaderNavLink>
             </CHeaderNavItem>
             </CTooltip>

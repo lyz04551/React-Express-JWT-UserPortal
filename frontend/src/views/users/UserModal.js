@@ -32,18 +32,10 @@ const UserModal = (props) => {
 
   const validate = values => {
     const errors = {};
-    if (!values.name ) {
-      errors.password = 'Required';
-    }
-    if (!values.gender){
-      errors.gender = 'Required';
-    }
-    if ( !values.birthday){
-      errors.birthday = 'Required';
-    }
-    if (!values.pass) {
-      errors.pass = 'Required';
-    }
+    values.name || (errors.name = 'Required');
+    values.gender || (errors.gender = 'Required');
+    values.birthday || (errors.birthday = 'Required');
+    values.pass || (errors.pass = 'Required');
     if (!values.email) {
       errors.email = 'Required';
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -145,7 +137,7 @@ const UserModal = (props) => {
                           onChange={setSelectedOption}
                           options={props.group}
                   />
-                  <p className="text-warning" >{formik.errors.cpf?formik.errors.cpf:null}</p>
+                  <p className="text-warning" >{selectedOption.length === 0?'Please Select One of User Group':null}</p>
                 </CCol>
                 <CCol>
                   <CInput id="cpf" name="cpf" placeholder="Cpf" value={formik.values.cpf} onChange={formik.handleChange} />

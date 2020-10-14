@@ -18,7 +18,8 @@ import {
   CForm,
   CFormGroup,
   CInput,
-  CFormText
+  CFormText,
+  CSelect
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useFormik } from 'formik';
@@ -184,15 +185,13 @@ const Modal = (props) => {
 
   const validate = values => {
     const errors = {};
-    if (!values.name ) {
-      errors.password = 'Required';
-    }
-    if (!values.gender){
-      errors.gender = 'Required';
-    }
-    if ( !values.birthday){
-      errors.birthday = 'Required';
-    }
+    values.name || (errors.name = 'Required');
+    (!values.gender || values.gender === '2') || (errors.gender = 'Required');
+    (!values.deleted || values.deleted === '2') || (errors.deleted = 'Required');
+    values.birthday || (errors.birthday = 'Required');
+    values.occupation || (errors.occupation = 'Required');
+    values.fk_license || (errors.fk_license = 'Required');
+
     if (!values.email) {
       errors.email = 'Required';
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -271,7 +270,11 @@ const Modal = (props) => {
                     <p className="text-warning" >{formik.errors.name?formik.errors.name:null}</p>
                   </CCol>
                   <CCol>
-                    <CInput type={'number'} id="gender" name="gender" placeholder="Gender" value={formik.values.gender} onChange={formik.handleChange}/>
+                    <CSelect custom name="gender" id="gender" value={formik.values.gender} onChange={formik.handleChange}>
+                      <option value="2">Select gender</option>
+                      <option value="0">Male</option>
+                      <option value="1">Female</option>
+                    </CSelect>
                     <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                   </CCol>
                   <CCol>
@@ -279,8 +282,7 @@ const Modal = (props) => {
                     <p className="text-warning" >{formik.errors.email?formik.errors.email:null}</p>
                   </CCol>
                   <CCol>
-                    <CInput id="CPF" name="CPF" type="CPF" placeholder="CPF" value={formik.values.CPF} onChange={formik.handleChange}/>
-                    <p className="text-warning" >{formik.errors.CPF?formik.errors.CPF:null}</p>
+                    <CInput id="CPF" name="CPF" placeholder="CPF" value={formik.values.CPF} onChange={formik.handleChange}/>
                   </CCol>
                 </CRow>
                 <CRow>
@@ -293,6 +295,7 @@ const Modal = (props) => {
                   </CCol>
                   <CCol>
                     <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
+                    <p className="text-warning" >{formik.errors.fk_license?formik.errors.fk_license:null}</p>
                   </CCol>
                 </CRow>
                 <CRow>
@@ -301,7 +304,11 @@ const Modal = (props) => {
                     <p className="text-warning" >{formik.errors.occupation?formik.errors.occupation:null}</p>
                   </CCol>
                   <CCol>
-                    <CInput type={'number'} id="deleted" name="deleted" placeholder="Deleted" value={formik.values.deleted} onChange={formik.handleChange} />
+                    <CSelect custom name={'deleted'} id={'deleted'} value={formik.values.deleted} onChange={formik.handleChange}>
+                      <option value="2">Select status</option>
+                      <option value="1">Deleted</option>
+                      <option value="0">Working</option>
+                    </CSelect>
                     <p className="text-warning" >{formik.errors.deleted?formik.errors.deleted:null}</p>
                   </CCol>
                   <CCol>
