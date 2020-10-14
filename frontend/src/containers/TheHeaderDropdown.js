@@ -6,9 +6,9 @@ import {
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
-  CDropdownToggle,
+  CDropdownToggle, CHeaderNavLink,
   CImg
-} from '@coreui/react'
+} from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 
 const TheHeaderDropdown = () => {
@@ -33,11 +33,12 @@ const TheHeaderDropdown = () => {
       <CDropdownToggle className="c-header-nav-link" caret={false}>
         <div className="c-avatar cil-vertical-align-center ">
           <label className="pr-2">{user_info?user_info.user.NAME:null}</label>
-          <CImg
-            src={'avatars/6.jpg'}
-            className="c-avatar-img"
-            alt="admin@bootstrapmaster.com"
-          />
+          <label><CIcon size={'xl'} name={'cilUser'} /></label>
+          {/*<CImg*/}
+          {/*  src={'avatars/6.jpg'}*/}
+          {/*  className="c-avatar-img"*/}
+          {/*  alt="admin@bootstrapmaster.com"*/}
+          {/*/>*/}
         </div>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">

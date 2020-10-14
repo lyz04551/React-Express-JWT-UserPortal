@@ -17,8 +17,8 @@ import {
   CForm,
   CFormGroup,
   CInput,
-  CFormText
-} from '@coreui/react'
+  CFormText, CSelect
+} from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 
 import { useFormik } from 'formik';
@@ -34,7 +34,7 @@ const License = () =>{
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
-    if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
+    ownRoles.includes('ROLE_LIC_EDIT') || fields.splice(-1,1);
   }
 
 
@@ -153,8 +153,8 @@ const License = () =>{
                       {dateConvertor(item.expiration_date)}
                     </td>
                   ),
-                  'deleted':(item) => (
-                    <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                  'locked':(item) => (
+                    <td><CBadge color={item.locked === 1? 'danger' : 'warning'}>{item.locked === 1? 'Locked': 'Unlocked'}</CBadge></td>
                   ),
                   'action': (item) => (
                     <td width={102}>
@@ -192,9 +192,16 @@ const Modal = (props) => {
 
   const validate = values => {
     const errors = {};
-    if (!values.name ) {
-      errors.password = 'Required';
-    }
+    values.name ||( errors.name = 'Required');
+    values.fk_user || (errors.fk_user = 'Required');
+    values.expiration_date || (errors.expiration_date = 'Required');
+    values.fixed_time || (errors.fixed_time = 'Required');
+    values.all_markers || (errors.all_markers = 'Required');
+    values.agenda_start || (errors.agenda_start = 'Required');
+    values.agenda_ending || (errors.agenda_ending = 'Required');
+    values.agenda_interval || (errors.agenda_interval = 'Required');
+    values.cat_color_active || (errors.cat_color_active = 'Required');
+    (!values.locked || values.locked === '2') && (errors.locked = 'Required');
     return errors;
   }
   const formik = useFormik({
@@ -288,26 +295,36 @@ const Modal = (props) => {
                 </CCol>
                 <CCol>
                   <CInput type={'number'} id="all_markers" name="all_markers" placeholder="All Markers" value={formik.values.all_markers} onChange={formik.handleChange}/>
-                </CCol>
-                <CCol>
-                  <CInput id="agenda_interval" name="agenda_interval" placeholder="Agenda Interval" value={formik.values.agenda_interval} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.all_markers?formik.errors.all_markers:null}</p>
                 </CCol>
                 <CCol>
                   <CInput type={'time'} id="agenda_start" name="agenda_start" placeholder={'Agenda Start'} value={formik.values.agenda_start} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.agenda_start?formik.errors.agenda_start:null}</p>
                 </CCol>
                 <CCol>
                   <CInput type={'time'} id="agenda_ending" name="agenda_ending" placeholder={'Agenda Ending'} value={formik.values.agenda_ending} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.agenda_ending?formik.errors.agenda_ending:null}</p>
                 </CCol>
               </CRow>
               <CRow>
+                <CCol>
+                  <CInput type={'number'} id="agenda_interval" name="agenda_interval" placeholder="Agenda Interval" value={formik.values.agenda_interval} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.agenda_interval?formik.errors.agenda_interval:null}</p>
+                </CCol>
                 <CCol>
                   <CInput id="reminder_msg_event" name="reminder_msg_event" placeholder={'Reminder MSG Event'} value={formik.values.reminder_msg_event} onChange={formik.handleChange}/>
                 </CCol>
                 <CCol>
                   <CInput type={'number'} id="cat_color_active" name="cat_color_active" placeholder={'CAT Color Active'} value={formik.values.cat_color_active} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.cat_color_active?formik.errors.cat_color_active:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput typ={'number'}  id="locked" name="locked" placeholder={'Locked'} value={formik.values.locked} onChange={formik.handleChange}/>
+                  <CSelect custom name={'locked'} id={'locked'} value={formik.values.locked} onChange={formik.handleChange}>
+                    <option value="2">Select status</option>
+                    <option value="1">Locked</option>
+                    <option value="0">Unlocked</option>
+                  </CSelect>
+                  <p className="text-warning" >{formik.errors.locked?formik.errors.locked:null}</p>
                 </CCol>
               </CRow>
               <CFormText className="help-block" placeholder={'Agenda Start'} color={'danger'}>{mess}</CFormText>

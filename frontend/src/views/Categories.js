@@ -187,9 +187,12 @@ const Modal = (props) => {
 
   const validate = values => {
     const errors = {};
-    if (!values.name ) {
-      errors.password = 'Required';
-    }
+    values.name || (errors.name = 'Required');
+    values.amount_patients || (errors.amount_patients = 'Required');
+    values.amount_suitable_overflow || (errors.amount_suitable_overflow = 'Required');
+    values.color || (errors.color = 'Required');
+    values.deleted || (errors.deleted = 'Required');
+    values.fk_license || (errors.fk_license = 'Required');
     return errors;
   }
   const formik = useFormik({
@@ -263,7 +266,6 @@ const Modal = (props) => {
                 </CCol>
                 <CCol>
                   <CInput id="nickname" name="nickname" placeholder="NickName" value={formik.values.nickname} onChange={formik.handleChange}/>
-                  <p className="text-warning" >{formik.errors.nickname?formik.errors.nickname:null}</p>
                 </CCol>
                 <CCol>
                   <CInput type={'number'} id="amount_patients" name="amount_patients" placeholder="Amount Patients" value={formik.values.amount_patients} onChange={formik.handleChange}/>
@@ -284,11 +286,13 @@ const Modal = (props) => {
                 </CCol>
                 <CCol>
                   <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.fk_license?formik.errors.fk_license:null}</p>
                 </CCol>
               </CRow>
               <CRow>
                 <CCol>
                   <CInput type={'number'} id="color" name="color" placeholder="Color" value={formik.values.color} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.color?formik.errors.color:null}</p>
                 </CCol>
                 <CCol></CCol>
                 <CCol></CCol>

@@ -14,7 +14,7 @@ export default [
     _tag: 'CSidebarNavItem',
     name: 'Professionals',
     to: '/professionals',
-    icon: 'cil-people',
+    icon: 'cil-badge',
     role: ['ROLE_PROF_VIEW','ROLE_PROF_EDIT','ROLE_PROF_VIEW_DATA']
   },
   {

@@ -143,6 +143,9 @@ const Users = () => {
                       {dateConvertor(item.birthday)}
                     </td>
                   ),
+                  'active':(item) => (
+                    <td><CBadge color={item.active === 1? 'success' : 'dark'}>{item.deleted === 1? 'Online': 'Offline'}</CBadge></td>
+                  ),
                   'deleted':(item) => (
                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
                   ),

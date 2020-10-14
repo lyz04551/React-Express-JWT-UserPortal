@@ -30,12 +30,7 @@ const UserGroupModal = (props) => {
 
   const validate = values => {
     const errors = {};
-    if (!values.name ) {
-      errors.name = 'Please enter group name';
-    }
-   if (!values.selectedOption) {
-     errors.select = 'Please select group roles.'
-   }
+    values.name || (errors.name = 'Please enter group name');
     return errors;
   }
   const formik = useFormik({
@@ -107,7 +102,7 @@ const UserGroupModal = (props) => {
                            options={props.role}
                           isMulti
                   />
-                  <p className="text-warning" >{formik.errors.select?formik.errors.select:null}</p>
+                  <p className="text-warning" >{selectedOption.length === 0?'Please Select one of Roles':null}</p>
                 </CCol>
               </CRow>
 

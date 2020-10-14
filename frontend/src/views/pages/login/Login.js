@@ -64,7 +64,7 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem('user_info')){
-      history.push('/')
+      history.push('/dashboard')
     }
   },[])
 
