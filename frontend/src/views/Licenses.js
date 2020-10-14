@@ -34,7 +34,7 @@ const License = () =>{
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
-    if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
+    ownRoles.includes('ROLE_LIC_EDIT') || fields.splice(-1,1);
   }
 
 
@@ -153,8 +153,8 @@ const License = () =>{
                       {dateConvertor(item.expiration_date)}
                     </td>
                   ),
-                  'deleted':(item) => (
-                    <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
+                  'locked':(item) => (
+                    <td><CBadge color={item.locked === 1? 'danger' : 'warning'}>{item.locked === 1? 'Locked': 'Unlocked'}</CBadge></td>
                   ),
                   'action': (item) => (
                     <td width={102}>
