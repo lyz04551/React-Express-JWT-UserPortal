@@ -1,12 +1,14 @@
 'use strict';
 const Auth = require('../models/user.model')
 const Role = require('../models/role.model')
+const jwt_config = require('../../config/jwt_config')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const accessTokenSecret = "t"
-const refreshTokenSecret = "e"
 const refreshTokens = []
-const saltRounds = 10
+const refreshTokenSecret = jwt_config.refreshTokenSecret
+const accessTokenSecret = jwt_config.accessTokenSecret
+const saltRounds = jwt_config.saltRounds
+const jwt_timeout = jwt_config.jwt_timeout
 
 exports.getdAll = function (req, res) {
     const ownRole = req.user.role.map(item => item.nome)
@@ -96,7 +98,7 @@ exports.login = (req, res) => {
                 const match = bcrypt.compareSync(pass, user[0].pass)
                 if (match) {
                     const accessToken = jwt.sign({ username: user[0].username, role: roles }, accessTokenSecret,
-                        { expiresIn: '20m' })
+                        { expiresIn: jwt_timeout })
                     const refreshToken = jwt.sign({ username: user[0].username, role: roles }, refreshTokenSecret)
                     refreshTokens.push(refreshToken)
                     user[0].roles = roles
@@ -138,10 +140,8 @@ exports.token = (req, res) => {
 }
 exports.logout = (req, res) => {
     const token = req.body.token;
-    console.log(refreshTokens)
     const result = refreshTokens.filter(saved_token => saved_token !== token);
     const leng = refreshTokens.length;
     refreshTokens.splice(0, leng, result)
-    console.log(refreshTokens)
     res.send("Logout successful");
 }
