@@ -13,7 +13,6 @@ var Category = function(value){
 
 Category.getAll = (result) => {
     dbConn.query('Select id, name, nickname, amount_patients, amount_suitable_overflow, duration_time, color, deleted, fk_license from categories', null, (err, res) =>{
-        console.log(err)
         if (err) result(err, null)
         else result(null, res)
     })

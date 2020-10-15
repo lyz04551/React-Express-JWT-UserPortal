@@ -1,13 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const jwt_config = require('./config/jwt_config')
 //create express app
 const app = express();
 
-var corsOptions = {
-    origin: "http://localhost:3000"
-}
+var corsOptions = jwt_config.corsOptions
 
 app.use(cors(corsOptions));
 
