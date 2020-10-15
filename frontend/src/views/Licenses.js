@@ -22,7 +22,7 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import { useFormik } from 'formik';
-import { changeUserInfo } from './users/Users';
+import { changeUserInfo } from './Users';
 
 const License = () =>{
   const history = useHistory()

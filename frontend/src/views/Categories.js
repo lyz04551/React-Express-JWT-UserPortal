@@ -21,7 +21,7 @@ import {
   CFormText
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { changeUserInfo } from './users/Users';
+import { changeUserInfo } from './Users';
 
 
 const Category = () =>{

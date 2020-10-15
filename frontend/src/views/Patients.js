@@ -23,7 +23,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useFormik } from 'formik';
-import { changeUserInfo } from './users/Users';
+import { changeUserInfo } from './Users';
 
 
 const Patient = () =>{
