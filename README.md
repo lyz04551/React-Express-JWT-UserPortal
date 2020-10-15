@@ -8,7 +8,7 @@
   <img src="https://github.com/Tortu-Ch/React-Login-Page/blob/main/.idea/role_select.png"/>
 </p>
 ## React-Express-JWT-UserPortal
-This is used React coreUI, [JWT](https://www.npmjs.com/package/jsonwebtoken), [Bcrypt](https://www.npmjs.com/package/bcrypt), [Cors Organization](https://www.npmjs.com/package/cors), Express.js, MySQL.
+This is used React coreUI, [JWT](https://www.npmjs.com/package/jsonwebtoken) and [Bcrypt](https://www.npmjs.com/package/bcrypt) and [Cors Organization](https://www.npmjs.com/package/cors), Express.js, MySQL.
 
 - Users has different panel depending on the Owned Permission.
 
