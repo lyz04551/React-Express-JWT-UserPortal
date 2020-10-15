@@ -16,7 +16,11 @@ const TheHeaderDropdown = () => {
   async function logout() {
     try {
       localStorage.removeItem('user_info')
-      await axios.post('/logout', { token: user_info.accessToken })
+      await axios.post('/logout', null,{
+        headers: {
+          token: user_info.refreshToken
+        }
+      })
       history.push('/login')
     } catch (e) {
       alert(e.message)

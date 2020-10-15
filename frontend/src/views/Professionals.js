@@ -48,6 +48,11 @@ const Professional = () =>{
     setRowData(item)
   }
 
+  const redirect = () => {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/professionals/' + rowID, {
       headers: {
@@ -58,7 +63,10 @@ const Professional = () =>{
       res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   const dateConvertor = (dt) => {
@@ -75,21 +83,17 @@ const Professional = () =>{
             token: user_info.refreshToken
           }
         })
+        res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
         if (res.data.professionals) {
-          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           const val = res.data.professionals
           setProfessinalData(val)
         } else {
-          if (res.data.message === 'No Permission'){
-            res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
-            history.push('/dashboard')
-          } else {
-            history.push('/login')
-            localStorage.removeItem('user_info')
+          alert(res.data)
+            redirect()
           }
-        }
       } catch (err) {
         alert(err.message)
+        redirect()
       }
     }
     getPermissions()
@@ -182,6 +186,7 @@ const Professional = () =>{
 
 const Modal = (props) => {
   const [mess, setMess] = useState('')
+  const history = useHistory()
   const rowData = props.rowData
   function handleAddNewOne() {
     props.handleAddNew();
@@ -194,8 +199,8 @@ const Modal = (props) => {
   const validate = values => {
     const errors = {};
     values.name || (errors.name = 'Required');
-    (!values.gender || values.gender === '2') || (errors.gender = 'Required');
-    (!values.deleted || values.deleted === '2') || (errors.deleted = 'Required');
+    (!values.gender || values.gender === '2') && (errors.gender = 'Required');
+    (!values.deleted || values.deleted === '2') && (errors.deleted = 'Required');
     values.birthday || (errors.birthday = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
@@ -211,10 +216,10 @@ const Modal = (props) => {
         initialValues: {
           name: rowData.name || '',
           gender: rowData.gender || '',
-          birthday: rowData.birthday || '',
+          birthday: '',
           email: rowData.email || '',
           comment: rowData.comment || '',
-          picture: rowData.picture || '',
+          picture: '',
           deleted: parseInt(rowData.deleted) || '',
           fk_license: rowData.fk_license || '',
         },
@@ -255,6 +260,8 @@ const Modal = (props) => {
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 

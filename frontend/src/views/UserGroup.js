@@ -44,6 +44,11 @@ const UserGroup = () => {
     setRowData(item)
   }
 
+  const redirect = () => {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/usergroup/' + rowID, {
       headers: {
@@ -51,10 +56,13 @@ const UserGroup = () => {
         token: user_info.refreshToken
       }
     }).then(res => {
-      changeUserInfo(res.data.accessToken, res.data.refreshToken)
+      res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   useEffect(() => {
@@ -67,7 +75,7 @@ const UserGroup = () => {
           }
         })
         if (res.data.group) {
-          changeUserInfo(res.data.accessToken, res.data.refreshToken)
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           setProfessinalData(res.data.group)
           await getRoles()
         } else {
@@ -75,6 +83,7 @@ const UserGroup = () => {
         }
       } catch (e) {
         alert(e.message)
+        redirect()
       }
     }
     async function getRoles(){
@@ -86,7 +95,7 @@ const UserGroup = () => {
           }
         })
         if (res.data.role){
-          changeUserInfo(res.data.accessToken, res.data.refreshToken)
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           setRole(res.data.role)
         } else {
           alert(res.data)
@@ -94,12 +103,10 @@ const UserGroup = () => {
         }
       } catch (e) {
         alert(e.message)
+        redirect()
       }
     }
-    const redirect = () => {
-      history.push('/')
-      localStorage.removeItem('user_info')
-    }
+
     getUsersGroup()
   }, [status])
 
@@ -173,6 +180,7 @@ const UserGroup = () => {
 const UserGroupModal = (props) => {
   const [mess, setMess] = useState('')
   const [selectedOption, setSelectedOption] = useState([]);
+  const history = useHistory()
 
   const handleAddNewOne = () => {
     props.handleAddNew();
@@ -230,6 +238,8 @@ const UserGroupModal = (props) => {
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 

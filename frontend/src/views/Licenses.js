@@ -49,6 +49,11 @@ const License = () =>{
     setRowData(item)
   }
 
+  const redirect = ()=> {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/licenses/' + rowID, {
       headers: {
@@ -59,7 +64,10 @@ const License = () =>{
       res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   const dateConvertor = (dt) => {
@@ -83,11 +91,11 @@ const License = () =>{
           const val = res.data.license
           setLicenseData(val)
         } else {
-          history.push('/login')
-          localStorage.removeItem('user_info')
+          redirect()
         }
       } catch (err) {
         alert(err.message)
+        redirect()
       }
     }
     getPermissions()
@@ -186,6 +194,7 @@ const License = () =>{
 
 const Modal = (props) => {
   const [mess, setMess] = useState('')
+  const history = useHistory()
   const rowData = props.rowData
   function handleAddNewOne() {
     props.handleAddNew();
@@ -261,10 +270,11 @@ const Modal = (props) => {
           handleDisplay()
         } else {
           setMess(res.data.message)
-          console.log(mess)
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 
@@ -278,7 +288,7 @@ const Modal = (props) => {
         size="lg"
         color={'info'}
       >
-        <CModalHeader closeButton>New Professional</CModalHeader>
+        <CModalHeader closeButton>New License</CModalHeader>
         <CModalBody>
           <CForm>
             <CFormGroup>
