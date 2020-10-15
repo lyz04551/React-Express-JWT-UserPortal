@@ -49,6 +49,11 @@ const Category = () =>{
     setRowData(item)
   }
 
+  const redirect = () => {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/categories/' + rowID, {
       headers: {
@@ -58,7 +63,10 @@ const Category = () =>{
     }).then(res => {
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   const dateConvertor = (dt) => {
@@ -83,11 +91,12 @@ const Category = () =>{
           const val = res.data.category
           setCategoryData(val)
         } else {
-          history.push('/login')
-          localStorage.removeItem('user_info')
+          alert(res.data)
+          redirect()
         }
       } catch (err) {
         alert(err.message)
+        redirect()
       }
     }
     getPermissions()
@@ -180,6 +189,7 @@ const Category = () =>{
 
 const Modal = (props) => {
   const [mess, setMess] = useState('')
+  const history = useHistory()
   const rowData = props.rowData
   function handleAddNewOne() {
     props.handleAddNew();
@@ -247,6 +257,8 @@ const Modal = (props) => {
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 
@@ -260,7 +272,7 @@ const Modal = (props) => {
         size="lg"
         color={'info'}
       >
-        <CModalHeader closeButton>New Professional</CModalHeader>
+        <CModalHeader closeButton>New Category</CModalHeader>
         <CModalBody>
           <CForm>
             <CFormGroup>

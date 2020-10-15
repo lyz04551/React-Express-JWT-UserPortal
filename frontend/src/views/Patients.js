@@ -51,6 +51,11 @@ const Patient = () =>{
     setRowData(item)
   }
 
+  const redirect = () => {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/patients/' + rowID, {
       headers: {
@@ -61,7 +66,10 @@ const Patient = () =>{
       res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   const dateConvertor = (dt) => {
@@ -83,11 +91,12 @@ const Patient = () =>{
           const val = res.data.patient
           setPatientData(val)
         } else {
-          history.push('/login')
-          localStorage.removeItem('user_info')
+          alert(res.data)
+          redirect()
         }
       } catch (err) {
         alert(err.message)
+        redirect()
       }
     }
     getPermissions()
@@ -178,6 +187,7 @@ const Patient = () =>{
 }
 
 const Modal = (props) => {
+  const history = useHistory()
   const [mess, setMess] = useState('')
   const rowData = props.rowData
   function handleAddNewOne() {
@@ -191,8 +201,8 @@ const Modal = (props) => {
   const validate = values => {
     const errors = {};
     values.name || (errors.name = 'Required');
-    (!values.gender || values.gender === '2') || (errors.gender = 'Required');
-    (!values.deleted || values.deleted === '2') || (errors.deleted = 'Required');
+    (!values.gender || values.gender === '2') && (errors.gender = 'Required');
+    (!values.deleted || values.deleted === '2') && (errors.deleted = 'Required');
     values.birthday || (errors.birthday = 'Required');
     values.occupation || (errors.occupation = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
@@ -209,10 +219,10 @@ const Modal = (props) => {
       initialValues: {
         name: rowData.name || '',
         gender: rowData.gender || '',
-        birthday: rowData.birthday || '',
+        birthday: '',
         email: rowData.email || '',
         comment: rowData.comment || '',
-        picture: rowData.picture || '',
+        picture: '',
         deleted: rowData.deleted || '',
         fk_license: rowData.fk_license || '',
         CPF: rowData.CPF || '',
@@ -255,6 +265,8 @@ const Modal = (props) => {
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 
@@ -268,7 +280,7 @@ const Modal = (props) => {
         size="lg"
         color={'info'}
       >
-        <CModalHeader closeButton>New Professional</CModalHeader>
+        <CModalHeader closeButton>New Patient</CModalHeader>
         <CModalBody>
           <CForm>
               <CFormGroup>

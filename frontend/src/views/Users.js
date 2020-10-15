@@ -9,7 +9,7 @@ import {
   CDataTable, CForm, CFormGroup, CFormText, CInput,
   CModal, CModalBody, CModalFooter,
   CModalHeader,
-  CRow
+  CRow, CSelect
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import axios from '../services/api';
@@ -44,6 +44,11 @@ const Users = () => {
     setRowData(item)
   }
 
+  const redirect = () => {
+    history.push('/login')
+    localStorage.removeItem('user_info')
+  }
+
   const deleteRow = (rowID) => {
     axios.delete('/' + rowID, {
       headers: {
@@ -54,7 +59,10 @@ const Users = () => {
       res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
-    }).catch(err => alert(err.message))
+    }).catch(err => {
+      alert(err.message);
+      redirect()
+    })
   }
 
   const dateConvertor = (dt) => {
@@ -75,9 +83,13 @@ const Users = () => {
            res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
            setProfessinalData(res.data.users)
            await getGroups()
-         } else redirect()
+         } else {
+           alert(res.data)
+           redirect();
+         }
        } catch (err) {
          alert(err.message)
+         redirect()
        }}
 
        async function getGroups(){
@@ -92,16 +104,15 @@ const Users = () => {
             res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
             setGroup(res.data.group)
           } else {
+            alert(res.data)
             redirect();
           }
         } catch (e) {
           alert(e.message)
+          redirect();
         }
        }
-       const redirect = () => {
-          history.push('/login')
-          localStorage.removeItem('user_info')
-        }
+
     getAllUser()
   }, [status])
 
@@ -197,6 +208,7 @@ const UserModal = (props) => {
 
   const [mess, setMess] = useState('')
   const [selectedOption, setSelectedOption] = useState([])
+  const history = useHistory()
   const rowData = props.rowData
   function handleAddNewOne() {
     props.handleAddNew();
@@ -269,10 +281,11 @@ const UserModal = (props) => {
           handleDisplay()
         } else {
           setMess(res.data.message)
-          console.log(mess)
         }
       } catch (e) {
         alert(e.message)
+        history.push('/login')
+        localStorage.removeItem('user_info')
       }
     }
 
@@ -286,7 +299,7 @@ const UserModal = (props) => {
         size="lg"
         color={'info'}
       >
-        <CModalHeader closeButton>New Professional</CModalHeader>
+        <CModalHeader closeButton>New User</CModalHeader>
         <CModalBody>
           <CForm>
             <CFormGroup>
@@ -327,14 +340,22 @@ const UserModal = (props) => {
                   <p className="text-warning" >{formik.errors.birthday?formik.errors.birthday:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput id="gender" name="gender" placeholder="Gender(0 or 1)" value={formik.values.gender} onChange={formik.handleChange}/>
+                  <CSelect custom name="gender" id="gender" value={formik.values.gender} onChange={formik.handleChange}>
+                    <option value="2">Select gender</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
+                  </CSelect>
                   <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                 </CCol>
               </CRow>
 
               <CRow>
                 <CCol>
-                  <CInput id="master" name="master" placeholder="Master 0 or 1" value={formik.values.master} onChange={formik.handleChange}/>
+                  <CSelect custom name="master" id="master" value={formik.values.master} onChange={formik.handleChange}>
+                    <option value="2">Select gender</option>
+                    <option value="0">Master</option>
+                    <option value="1">No Master</option>
+                  </CSelect>
                   <p className="text-warning" >{formik.errors.master?formik.errors.master:null}</p>
                 </CCol>
                 <CCol>
@@ -366,9 +387,13 @@ const UserModal = (props) => {
 }
 
 export function changeUserInfo (tk_access, tk_ref){
+  console.log("changeUserInfo")
   const user_info = JSON.parse(localStorage.getItem('user_info'))
+  console.log(user_info.accessToken)
   user_info.accessToken = tk_access
   user_info.refreshToken = tk_ref
   localStorage.setItem('user_info', JSON.stringify(user_info))
+  console.log(user_info.accessToken)
 }
+
 export default Users
