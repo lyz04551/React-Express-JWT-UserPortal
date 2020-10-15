@@ -16,7 +16,6 @@ exports.getdAll = function (req, res) {
     const refreshToken = req.refreshToken
     if (ownRole.includes('ROLE_USER_VIEW')) {
         Auth.getAll(function(err, users) {
-            console.log('controller')
             if (err) {
                 err.accessToken = accessToken
                 err.refreshToken = refreshToken
@@ -55,7 +54,6 @@ exports.update = (req, res) => {
         req.body.pass = bcrypt.hashSync(req.body.pass, saltRounds)
         const new_user = new Auth(req.body)
         Auth.update(req.params.id, req.body.usergroup.value, new_user, (err, user) => {
-            console.log(err)
             if (err) {
                 err.accessToken = accessToken
                 err.refreshToken = refreshToken
@@ -90,7 +88,7 @@ exports.authenticateJWT = (req, res, next) => {
                 return res.sendStatus(403);
             }
             const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '20m' });
-            const refreshToken = jwt.sign({ username: user[0].username, role: user.role }, refreshTokenSecret)
+            const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret)
             refreshTokens = refreshTokens.map(saved_token => saved_token !== token);
             refreshTokens.push(refreshToken)
             req.accessToken = accessToken
@@ -102,13 +100,11 @@ exports.authenticateJWT = (req, res, next) => {
         res.status(400).send({error: true, message: 'Please provide all required field', accessToken: null, refreshToken: null})
     }  else {
         if (authHeader) {
-            // console.log(authHeader)
             jwt.verify(authHeader, accessTokenSecret, (err, user) => {
-                // console.log(err)
                 if (err) {
                     if (err.message === "jwt expired") {
                         newToken()
-                    } else res.sendStatus(403)
+                    } else res.status(403).send({error: true, message: err.message})
                 } else req.user = user
                 next()
             })
@@ -118,7 +114,6 @@ exports.authenticateJWT = (req, res, next) => {
 }
 exports.login = (req, res) => {
     const { email, pass } = req.body
-    console.log(req.body)
     if (req.body.constructor === Object && Object.keys(req.body).length === 0){
         res.status(400).send({error: true, message: 'Please provide all required field', accessToken: null, refreshToken: null})
     } else {

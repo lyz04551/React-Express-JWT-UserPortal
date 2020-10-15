@@ -32,17 +32,13 @@ Auth.getAll = function(result){
 }
 Auth.addNew = function(data, usergroup, result){
     dbConn.query(`Select * from users where username=${JSON.stringify(data['username'])} OR email= ${JSON.stringify( data['email'])}`, null,(err, res) => {
-        console.log(err)
         if (err) result(err, null)
         if (res.length === 0) {
             dbConn.query("INSERT INTO users set ?", data, function (error, response) {
                 if (error) {
-                    console.log("error:", error)
                     result(error, null);
                 } else {
-                    console.log(response.insertId);
                     dbConn.query(`Insert into users_usergroup set users_id=${response.insertId}, usergroup_id=${usergroup}`, null,(errThr, resThr) => {
-                        console.log(errThr)
                         if (errThr) result(error, null)
                         else result(null, response)
                     })
@@ -74,7 +70,6 @@ Auth.delete = function(id, result) {
     })
 }
 Auth.findByEmail = function (email, result) {
-    let val = []
     dbConn.query(`SELECT users.id, NAME, username, email, pass, initcode, cpf, birthday, gender, MASTER, active, fk_professional, fk_license, deleted, creation_timestamp, usergroup_id, usergroup.nome
         FROM users
         LEFT JOIN users_usergroup
@@ -83,7 +78,6 @@ Auth.findByEmail = function (email, result) {
         ON usergroup_id = usergroup.id
         WHERE email = ?`, email, function (err, res) {
         if (err) {
-            console.log("error:", err)
             result(err, null);
         } else {
             result(null, res);

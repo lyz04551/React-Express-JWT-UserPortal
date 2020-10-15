@@ -16,7 +16,6 @@ var License = function(value){
 
 License.getAll = (result) => {
     dbConn.query('Select id, name, fk_user, creation_time, expiration_date, fixed_time, all_markers, agenda_interval, agenda_start, agenda_ending,reminder_msg_event, cat_color_active ,locked from licenses', null, (err, res) =>{
-        console.log(err)
         if (err) result(err, null)
         else result(null, res)
     })
