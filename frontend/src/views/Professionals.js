@@ -21,6 +21,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 import { useFormik } from 'formik';
+import { changeUserInfo } from './Users';
 
 const Professional = () =>{
   const history = useHistory()
@@ -50,9 +51,11 @@ const Professional = () =>{
   const deleteRow = (rowID) => {
     axios.delete('/professionals/' + rowID, {
       headers: {
-        authorization: user_info.accessToken
+        authorization: user_info.accessToken,
+        token: user_info.refreshToken
       }
     }).then(res => {
+      res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
     }).catch(err => alert(err.message))
@@ -68,15 +71,18 @@ const Professional = () =>{
       try {
         const res = await axios.get('/professionals', {
           headers: {
-            authorization: user_info.accessToken
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
         })
         if (res.data.professionals) {
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           const val = res.data.professionals
           setProfessinalData(val)
         } else {
           if (res.data.message === 'No Permission'){
-            history.push('/')
+            res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+            history.push('/dashboard')
           } else {
             history.push('/login')
             localStorage.removeItem('user_info')
@@ -221,28 +227,31 @@ const Modal = (props) => {
   async function add_new(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
-      let response = null
+      let res = null
       console.log(props.rowID)
       try {
         if (props.rowID === -1){
-          response = await axios.post(`${props.api}`, values, {
+          res = await axios.post(`${props.api}`, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put(`${props.api}/${props.rowID}`, values, {
+          res = await axios.put(`${props.api}/${props.rowID}`, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
-        if (response.data.message === "Success"){
+        res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+        if (res.data.message === "Success"){
           handleAddNewOne();
           handleDisplay()
         } else {
-          setMess(response.data.message)
+          setMess(res.data.message)
         }
       } catch (e) {
         alert(e.message)

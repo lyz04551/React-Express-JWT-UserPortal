@@ -5,8 +5,8 @@ const Professionals = React.lazy(() => import('./views/Professionals'));
 const Patients = React.lazy(() => import('./views/Patients'));
 const Categories = React.lazy(() => import('./views/Categories'));
 const Licenses = React.lazy(() => import('./views/Licenses'));
-const Users = React.lazy(() => import('./views/users/Users'));
-const UserGroup = React.lazy(() => import('./views/users/UserGroup'));
+const Users = React.lazy(() => import('./views/Users'));
+const UserGroup = React.lazy(() => import('./views/UserGroup'));
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },

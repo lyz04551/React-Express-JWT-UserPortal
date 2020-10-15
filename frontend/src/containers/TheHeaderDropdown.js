@@ -6,8 +6,7 @@ import {
   CDropdown,
   CDropdownItem,
   CDropdownMenu,
-  CDropdownToggle, CHeaderNavLink,
-  CImg
+  CDropdownToggle,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react'
 

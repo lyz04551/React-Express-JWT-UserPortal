@@ -22,6 +22,7 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import { useFormik } from 'formik';
+import { changeUserInfo } from './Users';
 
 const License = () =>{
   const history = useHistory()
@@ -51,9 +52,11 @@ const License = () =>{
   const deleteRow = (rowID) => {
     axios.delete('/licenses/' + rowID, {
       headers: {
-        authorization: user_info.accessToken
+        authorization: user_info.accessToken,
+        token: user_info.refreshToken
       }
     }).then(res => {
+      res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
     }).catch(err => alert(err.message))
@@ -71,10 +74,12 @@ const License = () =>{
       try {
         const res = await axios.get('/licenses', {
           headers: {
-            authorization: user_info.accessToken
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
         })
         if (res.data.license) {
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           const val = res.data.license
           setLicenseData(val)
         } else {
@@ -231,28 +236,31 @@ const Modal = (props) => {
   async function add_new(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
-      let response = null
+      let res = null
       console.log(props.rowID)
       try {
         if (props.rowID === -1){
-          response = await axios.post('/licenses', values, {
+          res = await axios.post('/licenses', values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put('/licenses/' + props.rowID, values, {
+          res = await axios.put('/licenses/' + props.rowID, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
-        if (response.data.message === "Success"){
+        res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+        if (res.data.message === "Success"){
           handleAddNewOne();
           handleDisplay()
         } else {
-          setMess(response.data.message)
+          setMess(res.data.message)
           console.log(mess)
         }
       } catch (e) {
