@@ -10,7 +10,7 @@ const licenseController = require('./controllers/license.controller')
 
 router.post('/login', authController.login)
 router.post('/logout', authController.logout)
-router.post('/token', authController.token)
+// router.post('/token', authController.token)
 
 // User CRUD
 router.get('/', authController.authenticateJWT, authController.getdAll)
