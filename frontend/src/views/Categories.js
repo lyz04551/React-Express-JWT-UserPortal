@@ -21,6 +21,7 @@ import {
   CFormText
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { changeUserInfo } from './users/Users';
 
 
 const Category = () =>{
@@ -51,7 +52,8 @@ const Category = () =>{
   const deleteRow = (rowID) => {
     axios.delete('/categories/' + rowID, {
       headers: {
-        authorization: user_info.accessToken
+        authorization: user_info.accessToken,
+        token: user_info.refreshToken
       }
     }).then(res => {
       alert(res.data.message)
@@ -72,10 +74,12 @@ const Category = () =>{
       try {
         const res = await axios.get('/categories', {
           headers: {
-            authorization: user_info.accessToken
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
         })
         if (res.data.category) {
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
           const val = res.data.category
           setCategoryData(val)
         } else {
@@ -209,7 +213,6 @@ const Modal = (props) => {
     },
     validate,
     onSubmit: values => {
-      console.log("adfadf")
       add_new(values)
     }
   })
@@ -217,28 +220,30 @@ const Modal = (props) => {
   async function add_new(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
-      let response = null
-      console.log(props.rowID)
+      let res = null
       try {
         if (props.rowID === -1){
-          response = await axios.post(`/categories`, values, {
+          res = await axios.post(`/categories`, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put(`/categories/${props.rowID}`, values, {
+          res = await axios.put(`/categories/${props.rowID}`, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
-        if (response.data.message === "Success"){
+        res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+        if (res.data.message === "Success"){
           handleAddNewOne();
           handleDisplay()
         } else {
-          setMess(response.data.message)
+          setMess(res.data.message)
         }
       } catch (e) {
         alert(e.message)

@@ -15,6 +15,7 @@ import {
   CInput,
   CFormText
 } from '@coreui/react';
+import { changeUserInfo } from './Users';
 
 const UserModal = (props) => {
   console.log(props.group)
@@ -69,27 +70,30 @@ const UserModal = (props) => {
   async function add_new(values) {
     const user_info = JSON.parse(localStorage.getItem('user_info'))
     if (user_info.user){
-      let response = null
+      let res = null
       try {
         if (props.rowID === -1){
-          response = await axios.post('/', values, {
+          res = await axios.post('/', values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
         if (props.rowID >= 0) {
-          response = await axios.put('/' + props.rowID, values, {
+          res = await axios.put('/' + props.rowID, values, {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
         }
-        if (response.data.message === "Success"){
+        res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+        if (res.data.message === "Success"){
           handleAddNewOne();
           handleDisplay()
         } else {
-          setMess(response.data.message)
+          setMess(res.data.message)
           console.log(mess)
         }
       } catch (e) {

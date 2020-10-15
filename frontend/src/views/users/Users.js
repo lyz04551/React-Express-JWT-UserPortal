@@ -20,6 +20,8 @@ const Users = () => {
     if (!ownRoles.includes('ROLE_LIC_EDIT')) fields.splice(-1,1)
   }
 
+
+
   const hanldeShowModal = () => {
     setRowID(null)
     setShowModal(!showModal)
@@ -33,9 +35,11 @@ const Users = () => {
   const deleteRow = (rowID) => {
     axios.delete('/' + rowID, {
       headers: {
-        authorization: user_info.accessToken
+        authorization: user_info.accessToken,
+        token: user_info.refreshToken
       }
     }).then(res => {
+      res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
     }).catch(err => alert(err.message))
@@ -51,10 +55,12 @@ const Users = () => {
        try {
          const res = await axios.get('/', {
            headers: {
-             authorization: user_info.accessToken
+             authorization: user_info.accessToken,
+             token: user_info.refreshToken
            }
          })
          if (res.data.users) {
+           res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
            setProfessinalData(res.data.users)
            await getGroups()
          } else redirect()
@@ -66,10 +72,12 @@ const Users = () => {
         try {
           const res = await axios.get('/usergroup-list', {
             headers: {
-              authorization: user_info.accessToken
+              authorization: user_info.accessToken,
+              token: user_info.refreshToken
             }
           })
           if (res.data.group) {
+            res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
             setGroup(res.data.group)
           } else {
             redirect();
@@ -171,5 +179,10 @@ const Users = () => {
     </>
   );
 }
-
+export function changeUserInfo (tk_access, tk_ref){
+  const user_info = JSON.parse(localStorage.getItem('user_info'))
+  user_info.accessToken = tk_access
+  user_info.refreshToken = tk_ref
+  localStorage.setItem('user_info', JSON.stringify(user_info))
+}
 export default Users

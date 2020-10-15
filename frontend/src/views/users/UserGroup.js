@@ -5,6 +5,7 @@ import CIcon from '@coreui/icons-react';
 import { useHistory } from 'react-router-dom';
 import axios from '../../services/api';
 import CBadgeGroup from './CBadgeGroup';
+import { changeUserInfo } from './Users';
 
 const UserGroup = () => {
   const fields = ['id', 'name', 'roles', 'action']
@@ -15,8 +16,6 @@ const UserGroup = () => {
   const [rowID, setRowID] = useState(null)
   const [rowData, setRowData] = useState([])
   const [role, setRole] = useState([])
-  // const [name, setName] = useState('<+>')
-  // const [ownRole, setOwnRole] = useState(null)
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
@@ -36,9 +35,11 @@ const UserGroup = () => {
   const deleteRow = (rowID) => {
     axios.delete('/usergroup/' + rowID, {
       headers: {
-        authorization: user_info.accessToken
+        authorization: user_info.accessToken,
+        token: user_info.refreshToken
       }
     }).then(res => {
+      changeUserInfo(res.data.accessToken, res.data.refreshToken)
       alert(res.data.message)
       handleAddNew()
     }).catch(err => alert(err.message))
@@ -49,10 +50,12 @@ const UserGroup = () => {
       try {
         const res = await axios.get('/usergroup', {
           headers: {
-            authorization: user_info.accessToken
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
         })
         if (res.data.group) {
+          changeUserInfo(res.data.accessToken, res.data.refreshToken)
           setProfessinalData(res.data.group)
           await getRoles()
         } else {
@@ -66,10 +69,12 @@ const UserGroup = () => {
       try {
         const res = await axios.get('/roles', {
           headers: {
-            authorization: user_info.accessToken
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
         })
         if (res.data.role){
+          changeUserInfo(res.data.accessToken, res.data.refreshToken)
           setRole(res.data.role)
         } else {
           alert(res.data)
