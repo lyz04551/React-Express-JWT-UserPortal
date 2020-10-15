@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const jwt_config = require('./config/jwt_config')
+const jwtConfig = require('./config/jwt.config')
 //create express app
 const app = express();
 
-var corsOptions = jwt_config.corsOptions
+var corsOptions = jwtConfig.corsOptions
 
 app.use(cors(corsOptions));
 

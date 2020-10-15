@@ -1,10 +1,10 @@
-const jwt_config = {
+const jwtConfig = {
     accessTokenSecret: 't',
     refreshTokenSecret: 'e',
     saltRounds: 10,
-    jwt_timeout: '1m',
+    jwt_timeout: '20m',
     corsOptions: {
         origin: "http://localhost:3000"
     }
 }
-module.exports = jwt_config
+module.exports = jwtConfig

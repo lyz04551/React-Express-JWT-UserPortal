@@ -10,7 +10,6 @@ const licenseController = require('./controllers/license.controller')
 
 router.post('/login', authController.login)
 router.post('/logout', authController.logout)
-// router.post('/token', authController.token)
 
 // User CRUD
 router.get('/', authController.authenticateJWT, authController.getdAll)
@@ -20,7 +19,6 @@ router.delete('/:id', authController.authenticateJWT, authController.delete)
 
 // Retrieve all roles
 router.get('/roles', authController.authenticateJWT, roleController.getAll)
-
 
 router.get('/usergroup-list', authController.authenticateJWT, userGroupController.getList)
 router.get('/usergroup', authController.authenticateJWT, userGroupController.getAll)

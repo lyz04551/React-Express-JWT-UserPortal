@@ -1,7 +1,7 @@
 'use strict';
 const Auth = require('../models/user.model')
 const Role = require('../models/role.model')
-const jwt_config = require('../../config/jwt_config')
+const jwt_config = require('../../config/jwt.config')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 let refreshTokens = []
@@ -81,19 +81,25 @@ exports.authenticateJWT = (req, res, next) => {
     req.accessToken = null
     req.refreshToken = null
     const newToken = function () {
+        console.log(token)
+        console.log("newToken")
         if (!token) return res.sendStatus(401);
         if(!refreshTokens.includes(token)) return res.sendStatus(403);
         jwt.verify(token, refreshTokenSecret, (err, user) => {
+            console.log("error: ",err)
             if (err) {
                 return res.sendStatus(403);
             }
+            refreshTokens = refreshTokens.filter(saved_token => saved_token !== token);
+            console.log("RefreshTokens: ",refreshTokens)
             const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '20m' });
             const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret)
-            refreshTokens = refreshTokens.map(saved_token => saved_token !== token);
             refreshTokens.push(refreshToken)
             req.accessToken = accessToken
             req.refreshToken = refreshToken
             req.user = user
+            console.log("New RefreshTokens",refreshTokens)
+
         });
     }
     if ((req.method ==='POST' || req.method === 'PUT') && req.body.constructor === Object && Object.keys(req.body).length === 0){
@@ -149,8 +155,9 @@ exports.login = (req, res) => {
 }
 exports.logout = (req, res) => {
     const token = req.headers.token;
+    console.log(token)
     console.log(refreshTokens.includes(token))
-    refreshTokens = refreshTokens.map(saved_token => saved_token !== token);
+    refreshTokens = refreshTokens.filter(saved_token => saved_token !== token);
     console.log(refreshTokens.includes(token))
     res.send("Logout successful");
 }
