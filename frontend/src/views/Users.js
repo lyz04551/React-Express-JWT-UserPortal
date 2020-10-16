@@ -41,6 +41,7 @@ const Users = () => {
 
   const addOrEdit = (id, item) => {
     setRowID(id)
+    item.birthday = dateConvertor(item.birthday)
     setRowData(item)
   }
 
@@ -63,11 +64,6 @@ const Users = () => {
       alert(err.message);
       redirect()
     })
-  }
-
-  const dateConvertor = (dt) => {
-    let date = new Date(dt);
-    return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
   }
 
   useEffect(() => {
@@ -164,8 +160,16 @@ const Users = () => {
                   'gender':
                     (item)=>(
                       <td>
-                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
-                          {item.gender === 0? "Male" : "Female"}
+                        <CBadge shape={'pill'} color={item.gender === 1? 'info' : 'success'}>
+                          {item.gender === 1? "Male" : "Female"}
+                        </CBadge>
+                      </td>
+                    ),
+                  'master':
+                    (item)=>(
+                      <td>
+                        <CBadge shape={'pill'} color={item.gender === 1? 'success' : 'dark'}>
+                          {item.gender === 1? "Master" : "No Master"}
                         </CBadge>
                       </td>
                     ),
@@ -341,9 +345,9 @@ const UserModal = (props) => {
                 </CCol>
                 <CCol>
                   <CSelect custom name="gender" id="gender" value={formik.values.gender} onChange={formik.handleChange}>
-                    <option value="2">Select gender</option>
-                    <option value="0">Male</option>
-                    <option value="1">Female</option>
+                    <option value="0">Select gender</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
                   </CSelect>
                   <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                 </CCol>
@@ -352,9 +356,9 @@ const UserModal = (props) => {
               <CRow>
                 <CCol>
                   <CSelect custom name="master" id="master" value={formik.values.master} onChange={formik.handleChange}>
-                    <option value="2">Select gender</option>
-                    <option value="0">Master</option>
-                    <option value="1">No Master</option>
+                    <option value="0">Select Master States</option>
+                    <option value="1">Master</option>
+                    <option value="2">No Master</option>
                   </CSelect>
                   <p className="text-warning" >{formik.errors.master?formik.errors.master:null}</p>
                 </CCol>
