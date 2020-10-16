@@ -22,6 +22,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { useFormik } from 'formik';
 import { changeUserInfo } from './Users';
+import {dateConvertor} from './Users';
 
 const Professional = () =>{
   const history = useHistory()
@@ -37,7 +38,6 @@ const Professional = () =>{
     if (!ownRoles.includes('ROLE_PROF_EDIT')) fields.splice(-1,1)
   }
 
-
   const hanldeShowModal = () => {
     setRowID(null)
     setShowModal(!showModal)
@@ -45,6 +45,7 @@ const Professional = () =>{
 
   const addOrEdit = (id, item) => {
     setRowID(id)
+    item.birthday = dateConvertor(item.birthday)
     setRowData(item)
   }
 
@@ -69,10 +70,7 @@ const Professional = () =>{
     })
   }
 
-  const dateConvertor = (dt) => {
-    let date = new Date(dt);
-    return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
-  }
+
 
   useEffect( () => {
     async function getPermissions() {
@@ -148,8 +146,8 @@ const Professional = () =>{
                   'gender':
                     (item)=>(
                       <td>
-                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
-                          {item.gender === 0? "Male" : "Female"}
+                        <CBadge shape={'pill'} color={item.gender === 1? 'info' : 'success'}>
+                          {item.gender === 1? "Male" : "Female"}
                         </CBadge>
                       </td>
                     ),
@@ -199,8 +197,8 @@ const Modal = (props) => {
   const validate = values => {
     const errors = {};
     values.name || (errors.name = 'Required');
-    (!values.gender || values.gender === '2') && (errors.gender = 'Required');
-    (!values.deleted || values.deleted === '2') && (errors.deleted = 'Required');
+    (!values.gender || values.gender === '0') && (errors.gender = 'Required');
+    (!values.deleted || values.deleted === '0') && (errors.deleted = 'Required');
     values.birthday || (errors.birthday = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
@@ -216,7 +214,7 @@ const Modal = (props) => {
         initialValues: {
           name: rowData.name || '',
           gender: rowData.gender || '',
-          birthday: '',
+          birthday: rowData.birthday || '',
           email: rowData.email || '',
           comment: rowData.comment || '',
           picture: '',
@@ -225,6 +223,7 @@ const Modal = (props) => {
         },
         validate,
         onSubmit: values => {
+          console.log(values.birthday)
           add_new(values)
         }
     })
@@ -286,9 +285,9 @@ const Modal = (props) => {
                   </CCol>
                   <CCol>
                     <CSelect custom name="gender" id="gender" value={formik.values.gender} onChange={formik.handleChange}>
-                      <option value="2">Select gender</option>
-                      <option value="0">Male</option>
-                      <option value="1">Female</option>
+                      <option value="0">Select gender</option>
+                      <option value="1">Male</option>
+                      <option value="2">Female</option>
                     </CSelect>
                     <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                   </CCol>
@@ -314,9 +313,9 @@ const Modal = (props) => {
                 <CRow>
                   <CCol>
                     <CSelect custom name={'deleted'} id={'deleted'} value={formik.values.deleted} onChange={formik.handleChange}>
-                      <option value="2">Select status</option>
+                      <option value="0">Select status</option>
                       <option value="1">Deleted</option>
-                      <option value="0">Working</option>
+                      <option value="2">Working</option>
                     </CSelect>
                     <p className="text-warning" >{formik.errors.deleted?formik.errors.deleted:null}</p>
                   </CCol>

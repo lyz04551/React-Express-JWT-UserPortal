@@ -396,4 +396,9 @@ export function changeUserInfo (tk_access, tk_ref){
   console.log(user_info.accessToken)
 }
 
+export function dateConvertor (dt) {
+  let date = new Date(dt);
+  return (date.getFullYear()+'-'+ ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '-' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())));
+}
+
 export default Users
