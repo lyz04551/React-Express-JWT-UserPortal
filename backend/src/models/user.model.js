@@ -19,7 +19,7 @@ var Auth = function (user) {
 }
 Auth.getAll = function(result){
     dbConn.query(
-        `SELECT users.id, name, username, usergroup.nome AS user_group, email, initcode, cpf, birthday, gender, master, active, fk_professional, fk_license, deleted, creation_timestamp 
+        `SELECT users.id, name, username, usergroup.nome AS user_group, usergroup.id AS user_group_id, email, initcode, cpf, birthday, gender, master, active, fk_professional, fk_license, deleted, creation_timestamp 
                 FROM users 
                 LEFT JOIN users_usergroup 
                 ON users.id = users_usergroup.users_id 
