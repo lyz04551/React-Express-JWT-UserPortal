@@ -67,47 +67,47 @@ const Users = () => {
   }
 
   useEffect(() => {
-      async function getAllUser(){
-       try {
-         const res = await axios.get('/', {
-           headers: {
-             authorization: user_info.accessToken,
-             token: user_info.refreshToken
-           }
-         })
-         if (res.data.users) {
-           res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
-           setProfessinalData(res.data.users)
-           await getGroups()
-         } else {
-           alert(res.data)
-           redirect();
-         }
-       } catch (err) {
-         alert(err.message)
-         redirect()
-       }}
-
-       async function getGroups(){
-        try {
-          const res = await axios.get('/usergroup-list', {
-            headers: {
-              authorization: user_info.accessToken,
-              token: user_info.refreshToken
-            }
-          })
-          if (res.data.group) {
-            res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
-            setGroup(res.data.group)
-          } else {
-            alert(res.data)
-            redirect();
+    async function getAllUser(){
+      try {
+        const res = await axios.get('/', {
+          headers: {
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
           }
-        } catch (e) {
-          alert(e.message)
+        })
+        if (res.data.users) {
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+          setProfessinalData(res.data.users)
+          await getGroups()
+        } else {
+          alert(res.data)
           redirect();
         }
-       }
+      } catch (err) {
+        alert(err.message)
+        redirect()
+      }}
+
+    async function getGroups(){
+      try {
+        const res = await axios.get('/usergroup-list', {
+          headers: {
+            authorization: user_info.accessToken,
+            token: user_info.refreshToken
+          }
+        })
+        if (res.data.group) {
+          res.data.accessToken && changeUserInfo(res.data.accessToken, res.data.refreshToken)
+          setGroup(res.data.group)
+        } else {
+          alert(res.data)
+          redirect();
+        }
+      } catch (e) {
+        alert(e.message)
+        redirect();
+      }
+    }
 
     getAllUser()
   }, [status])
@@ -168,8 +168,8 @@ const Users = () => {
                   'master':
                     (item)=>(
                       <td>
-                        <CBadge shape={'pill'} color={item.gender === 1? 'success' : 'dark'}>
-                          {item.gender === 1? "Master" : "No Master"}
+                        <CBadge shape={'pill'} color={item.master === 1? 'success' : 'dark'}>
+                          {item.master === 1? "Master" : "No Master"}
                         </CBadge>
                       </td>
                     ),
@@ -208,12 +208,11 @@ const Users = () => {
 }
 
 const UserModal = (props) => {
-  console.log(props.group)
-
   const [mess, setMess] = useState('')
   const [selectedOption, setSelectedOption] = useState([])
   const history = useHistory()
   const rowData = props.rowData
+  console.log(rowData)
   function handleAddNewOne() {
     props.handleAddNew();
   }
@@ -228,6 +227,7 @@ const UserModal = (props) => {
     values.gender || (errors.gender = 'Required');
     values.birthday || (errors.birthday = 'Required');
     values.pass || (errors.pass = 'Required');
+    values.usergroup || (errors.usergroup = 'Required');
     if (!values.email) {
       errors.email = 'Required';
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -249,11 +249,11 @@ const UserModal = (props) => {
       master: rowData.master || '',
       fk_professional: rowData.fk_professional || '',
       fk_license: rowData.fk_license || '',
-      deleted: rowData.deleted || ''
+      deleted: rowData.deleted || '',
+      usergroup: rowData.user_group_id || ''
     },
     validate,
     onSubmit: values => {
-      values.usergroup = selectedOption
       add_new(values)
     }
   })
@@ -288,8 +288,8 @@ const UserModal = (props) => {
         }
       } catch (e) {
         alert(e.message)
-        history.push('/login')
         localStorage.removeItem('user_info')
+        history.push('/login')
       }
     }
 
@@ -329,11 +329,15 @@ const UserModal = (props) => {
 
               <CRow>
                 <CCol>
-                  <Select defaultValue={selectedOption}
-                          onChange={setSelectedOption}
-                          options={props.group}
-                  />
-                  <p className="text-warning" >{selectedOption.length === 0?'Please Select One of User Group':null}</p>
+                  <CSelect custom name="usergroup" id="usergroup" value={formik.values.usergroup} onChange={formik.handleChange}>
+                    <option value="0">Select usergroup</option>
+                    {
+                      props.group.map((item) => <option value={item.value} key={item.value}>
+                        {item.label}
+                      </option>)
+                    }
+                  </CSelect>
+                  <p className="text-warning" >{formik.errors.usergroup?formik.errors.usergroup:null}</p>
                 </CCol>
                 <CCol>
                   <CInput id="cpf" name="cpf" placeholder="Cpf" value={formik.values.cpf} onChange={formik.handleChange} />
