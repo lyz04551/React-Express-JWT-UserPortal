@@ -33,7 +33,7 @@ exports.addNew = function (req, res){
     if (ownRole.includes('ROLE_USER_EDIT')) {
         req.body.pass = bcrypt.hashSync(req.body.pass, saltRounds)
         const new_user = new Auth(req.body)
-        Auth.addNew(new_user, req.body.usergroup.value, (err, user) => {
+        Auth.addNew(new_user, req.body.usergroup, (err, user) => {
             if (err) {
                 err.accessToken = accessToken
                 err.refreshToken = refreshToken
