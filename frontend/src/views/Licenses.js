@@ -23,6 +23,7 @@ import CIcon from '@coreui/icons-react'
 
 import { useFormik } from 'formik';
 import { changeUserInfo } from './Users';
+import { dateConvertor } from "./Users";
 
 const License = () =>{
   const history = useHistory()
@@ -46,6 +47,7 @@ const License = () =>{
 
   const addOrEdit = (id, item) => {
     setRowID(id)
+    item.expiration_date = dateConvertor(item.expiration_date)
     setRowData(item)
   }
 
@@ -68,13 +70,6 @@ const License = () =>{
       alert(err.message);
       redirect()
     })
-  }
-
-  const dateConvertor = (dt) => {
-    let date = new Date(dt);
-    return (
-      `${date.getFullYear()}-${((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1)))}-${((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()))} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
-    `);
   }
 
   useEffect( () => {
@@ -148,14 +143,6 @@ const License = () =>{
                       </div>
                     </td>
                   ),
-                  'gender':
-                    (item)=>(
-                      <td>
-                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
-                          {item.gender === 0? "Male" : "Female"}
-                        </CBadge>
-                      </td>
-                    ),
                   'creation_time':(item)=>(
                     <td>
                       {dateConvertor(item.creation_time)}
@@ -215,7 +202,7 @@ const Modal = (props) => {
     values.agenda_ending || (errors.agenda_ending = 'Required');
     values.agenda_interval || (errors.agenda_interval = 'Required');
     values.cat_color_active || (errors.cat_color_active = 'Required');
-    (!values.locked || values.locked === '2') && (errors.locked = 'Required');
+    (!values.locked || values.locked === '0') && (errors.locked = 'Required');
     return errors;
   }
   const formik = useFormik({
@@ -338,9 +325,9 @@ const Modal = (props) => {
                 </CCol>
                 <CCol>
                   <CSelect custom name={'locked'} id={'locked'} value={formik.values.locked} onChange={formik.handleChange}>
-                    <option value="2">Select status</option>
+                    <option value="0">Select status</option>
                     <option value="1">Locked</option>
-                    <option value="0">Unlocked</option>
+                    <option value="2">Unlocked</option>
                   </CSelect>
                   <p className="text-warning" >{formik.errors.locked?formik.errors.locked:null}</p>
                 </CCol>
