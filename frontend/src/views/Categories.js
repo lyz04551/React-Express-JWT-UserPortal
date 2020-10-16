@@ -32,6 +32,7 @@ const Category = () =>{
   const [rowID, setRowID] =useState(null)
   const [rowData, setRowData] = useState([])
   const fields = ['id','name', 'nickname', 'amount_patients', 'amount_suitable_overflow', 'duration_time', 'color', 'deleted', 'fk_license' ,'action']
+
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
@@ -68,14 +69,6 @@ const Category = () =>{
       redirect()
     })
   }
-
-  const dateConvertor = (dt) => {
-    let date = new Date(dt);
-    return (
-      `${date.getFullYear()}-${((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1)))}-${((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate()))} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}
-    `);
-  }
-
 
   useEffect( () => {
     async function getPermissions() {
@@ -156,11 +149,6 @@ const Category = () =>{
                         </CBadge>
                       </td>
                     ),
-                  'duration_time':(item)=> (
-                    <td>
-                      {dateConvertor(item.duration_time)}
-                    </td>
-                  ),
                   'deleted':(item) => (
                     <td><CBadge color={item.deleted === 1? 'danger' : 'warning'}>{item.deleted === 1? 'Deleted': 'Working'}</CBadge></td>
                   ),
@@ -206,6 +194,7 @@ const Modal = (props) => {
     values.amount_suitable_overflow || (errors.amount_suitable_overflow = 'Required');
     values.color || (errors.color = 'Required');
     values.deleted || (errors.deleted = 'Required');
+    values.duration_time || (errors.duration_time = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
     return errors;
   }
@@ -289,7 +278,8 @@ const Modal = (props) => {
                   <p className="text-warning" >{formik.errors.amount_patients?formik.errors.amount_patients:null}</p>
                 </CCol>
                 <CCol>
-                  <CInput type={'date'} id="duration_time" name="duration_time" placeholder="duration_time" value={formik.values.duration_time} onChange={formik.handleChange}/>
+                  <CInput type={'time'} id="duration_time" name="duration_time" placeholder="duration_time" value={formik.values.duration_time} onChange={formik.handleChange}/>
+                  <p className="text-warning" >{formik.errors.duration_time?formik.errors.duration_time:null}</p>
                 </CCol>
               </CRow>
               <CRow>
