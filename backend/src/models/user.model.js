@@ -39,6 +39,7 @@ Auth.addNew = function(data, usergroup, result){
                     result(error, null);
                 } else {
                     dbConn.query(`Insert into users_usergroup set users_id=${response.insertId}, usergroup_id=${usergroup}`, null,(errThr, resThr) => {
+                       console.log(errThr)
                         if (errThr) result(error, null)
                         else result(null, response)
                     })
