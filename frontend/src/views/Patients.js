@@ -23,7 +23,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useFormik } from 'formik';
-import { changeUserInfo } from './Users';
+import {changeUserInfo, dateConvertor} from './Users';
 
 
 const Patient = () =>{
@@ -33,7 +33,7 @@ const Patient = () =>{
   const [status, setStatus] = useState(0)
   const [rowID, setRowID] =useState(null)
   const [rowData, setRowData] = useState([])
-  const fields = ['id','picture', 'name', 'CPF', 'gender', 'birthday', 'email', 'occupation', 'comments', 'fk_license', 'deleted', 'action']
+  const fields = ['id','picture', 'name', 'CPF', 'gender', 'birthday', 'email', 'occupation', 'fk_license', 'deleted', 'action']
   const user_info = JSON.parse(localStorage.getItem('user_info'))
   if (user_info) {
     const ownRoles = user_info.user.roles.map(item=> item.nome)
@@ -48,6 +48,7 @@ const Patient = () =>{
 
   const addOrEdit = (id, item) => {
     setRowID(id)
+    item.birthday = dateConvertor(item.birthday)
     setRowData(item)
   }
 
@@ -70,11 +71,6 @@ const Patient = () =>{
       alert(err.message);
       redirect()
     })
-  }
-
-  const dateConvertor = (dt) => {
-    let date = new Date(dt);
-    return (((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear());
   }
 
   useEffect( () => {
@@ -150,8 +146,8 @@ const Patient = () =>{
                   ),
                   'gender':(item)=>(
                       <td>
-                        <CBadge shape={'pill'} color={item.gender === 0? 'info' : 'success'}>
-                          {item.gender === 0? "Male" : "Female"}
+                        <CBadge shape={'pill'} color={item.gender === 1? 'info' : 'success'}>
+                          {item.gender === 1? "Male" : "Female"}
                         </CBadge>
                       </td>
                     ),
@@ -201,8 +197,8 @@ const Modal = (props) => {
   const validate = values => {
     const errors = {};
     values.name || (errors.name = 'Required');
-    (!values.gender || values.gender === '2') && (errors.gender = 'Required');
-    (!values.deleted || values.deleted === '2') && (errors.deleted = 'Required');
+    (!values.gender || values.gender === '0') && (errors.gender = 'Required');
+    (!values.deleted || values.deleted === '0') && (errors.deleted = 'Required');
     values.birthday || (errors.birthday = 'Required');
     values.occupation || (errors.occupation = 'Required');
     values.fk_license || (errors.fk_license = 'Required');
@@ -219,9 +215,8 @@ const Modal = (props) => {
       initialValues: {
         name: rowData.name || '',
         gender: rowData.gender || '',
-        birthday: '',
+        birthday: rowData.birthday || '',
         email: rowData.email || '',
-        comment: rowData.comment || '',
         picture: '',
         deleted: rowData.deleted || '',
         fk_license: rowData.fk_license || '',
@@ -291,9 +286,9 @@ const Modal = (props) => {
                   </CCol>
                   <CCol>
                     <CSelect custom name="gender" id="gender" value={formik.values.gender} onChange={formik.handleChange}>
-                      <option value="2">Select gender</option>
-                      <option value="0">Male</option>
-                      <option value="1">Female</option>
+                      <option value="0">Select gender</option>
+                      <option value="1">Male</option>
+                      <option value="2">Female</option>
                     </CSelect>
                     <p className="text-warning" >{formik.errors.gender?formik.errors.gender:null}</p>
                   </CCol>
@@ -311,9 +306,6 @@ const Modal = (props) => {
                     <p className="text-warning" >{formik.errors.birthday?formik.errors.birthday:null}</p>
                   </CCol>
                   <CCol>
-                    <CInput id="comment" name="comment" placeholder="Comment" value={formik.values.comment} onChange={formik.handleChange}/>
-                  </CCol>
-                  <CCol>
                     <CInput id="fk_license" name="fk_license" placeholder="Fk License" value={formik.values.fk_license} onChange={formik.handleChange}/>
                     <p className="text-warning" >{formik.errors.fk_license?formik.errors.fk_license:null}</p>
                   </CCol>
@@ -325,9 +317,9 @@ const Modal = (props) => {
                   </CCol>
                   <CCol>
                     <CSelect custom name={'deleted'} id={'deleted'} value={formik.values.deleted} onChange={formik.handleChange}>
-                      <option value="2">Select status</option>
+                      <option value="0">Select status</option>
                       <option value="1">Deleted</option>
-                      <option value="0">Working</option>
+                      <option value="2">Working</option>
                     </CSelect>
                     <p className="text-warning" >{formik.errors.deleted?formik.errors.deleted:null}</p>
                   </CCol>

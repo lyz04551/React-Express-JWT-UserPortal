@@ -21,8 +21,10 @@ const WidgetsDropdown = lazy(() => import('./widgets/WidgetsDropdown'))
 const Dashboard = () => {
   const history = useHistory()
   const user_info = JSON.parse(localStorage.getItem('user_info'))
-  if (!user_info) history.push('/login')
 
+  useEffect(()=> {
+    (user_info) || history.push('/login')
+  }, [])
     return (
     <>
       <WidgetsDropdown />
