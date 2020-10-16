@@ -212,7 +212,6 @@ const UserModal = (props) => {
   const [selectedOption, setSelectedOption] = useState([])
   const history = useHistory()
   const rowData = props.rowData
-  console.log(rowData)
   function handleAddNewOne() {
     props.handleAddNew();
   }
